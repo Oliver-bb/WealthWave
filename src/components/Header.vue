@@ -21,8 +21,7 @@
           @keydown.space.prevent="go('home')"
           style="cursor:pointer"
         >
-          <img class="logo-mark" src="/wealthwave-logo.png" alt="WealthWave Logo" aria-hidden="true">
-          <span class="logo-text">wealthwave</span>
+          <img class="logo-mark" :src="logoSrc" alt="WealthWave Logo" aria-hidden="true">
         </div>
 
         <!-- Mobile toggle -->
@@ -56,7 +55,7 @@
 </template>
 
 <script setup>
-import { inject, ref, onMounted, onBeforeUnmount, watch, nextTick } from 'vue'
+import { inject, ref, onMounted, onBeforeUnmount, watch, nextTick, computed } from 'vue'
 
 const navigateTo = inject('navigateTo')
 const currentRoute = inject('currentRoute')
@@ -66,6 +65,11 @@ const go = (r) => { menuOpen.value = false; navigateTo(r) }
 
 const isDark = ref(window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false)
 let mql, themeHandler
+
+// Computed property to switch between dark/light logos
+const logoSrc = computed(() => {
+  return isDark.value ? '/logo-dark.png' : '/logo-light.png'
+})
 
 // measure header height and publish to :root as --header-height
 const el = ref(null)
@@ -173,8 +177,8 @@ onBeforeUnmount(() => {
 
 /* Light ribbon */
 .header.theme-pearl::before {
-  background: #f0f8f9;
-  border-bottom-color: rgba(255,255,255,.10);
+  background: #ffffff;
+  border-bottom-color: rgba(0,0,0,0.06);
 }
 .header.theme-pearl .logo-text { color: #111827; }              /* ensure dark logo in light theme */
 .header.theme-pearl .nav-links a { color: #111827; }
@@ -194,7 +198,7 @@ onBeforeUnmount(() => {
 
 /* ===== Layout & sizing ===== */
 .navbar {
-  height: 72px;
+  height: 107px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -208,8 +212,8 @@ onBeforeUnmount(() => {
 }
 
 .logo-mark { 
-  width: 32px !important; 
-  height: 32px !important; 
+  width: 89px !important; 
+  height: 89px !important; 
   object-fit: contain;
   border-radius: 4px;
 }
@@ -275,27 +279,22 @@ onBeforeUnmount(() => {
 
 /* Wider screens: scale brand and bar a bit */
 @media (min-width: 1200px) {
-  .logo-mark { width: 32px; height: 32px; object-fit: contain; border-radius: 4px; }
-  .header.theme-pearl .nav-links { background: rgba(251, 247, 247, 0.95); }
-  .logo-text { font-size: clamp(22px, 1.8vw, 26px); }
+  .logo-mark { width: 99px !important; height: 99px !important; object-fit: contain; border-radius: 4px; }
+  .header.theme-pearl .nav-links { background: rgba(255, 255, 255, 0.95); }
 }
 @media (min-width: 1280px) {
-  .logo-mark { width: 40px !important; height: 40px !important; object-fit: contain; border-radius: 4px; }
-  .logo-text { font-size: 24px !important; }
+  .logo-mark { width: 109px !important; height: 109px !important; object-fit: contain; border-radius: 4px; }
 }
 @media (min-width: 1536px) {
-  .logo-mark { width: 46px !important; height: 46px !important; object-fit: contain; border-radius: 4px; }
-  .logo-text { font-size: 26px !important; }
+  .logo-mark { width: 119px !important; height: 119px !important; object-fit: contain; border-radius: 4px; }
 }
 @media (min-width: 1920px) {
-  .logo-mark { width: 50px !important; height: 50px !important; object-fit: contain; border-radius: 4px; }
-  .logo-text { font-size: 28px !important; }
+  .logo-mark { width: 129px !important; height: 129px !important; object-fit: contain; border-radius: 4px; }
 }
 
 /* Keep the bar comfy as the logo grows */
-.navbar { height: 72px; }
-@media (min-width: 1536px) { .navbar { height: 76px; } }
-@media (min-width: 1920px) { .navbar { height: 80px; } }
+@media (min-width: 1536px) { .navbar { height: 120px; } }
+@media (min-width: 1920px) { .navbar { height: 130px; } }
 
 /* Ribbon visibility: hidden by default, only ON at home */
 .header::before {

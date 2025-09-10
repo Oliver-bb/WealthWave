@@ -1,14 +1,10 @@
 <template>
   <footer class="footer" role="contentinfo">
     <div class="container footer-container">
-      <div class="footer-brand" @click="goHome" style="cursor:pointer">
-        <svg class="logo-mark" viewBox="0 0 24 24" aria-hidden="true">
-          <path fill="var(--primary-color)" d="M12 3l9 4-9 4-9-4 9-4Z"/>
-          <path fill="#A5B4FC" d="M6 10v4c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2v-4l-6 3-6-3Z"/>
-        </svg>
-        <span class="logo-text">WealthWave</span>
+      <div class="footer-large-logo" @click="goHome" style="cursor:pointer">
+        <img :src="logoSrc" alt="WealthWave" class="footer-logo-image">
       </div>
-
+      
       <nav class="footer-links" aria-label="Footer">
         <!-- All links route to home -->
         <a href="#" @click.prevent="goHome">About</a>
@@ -20,29 +16,73 @@
 </template>
 
 <script setup>
-import { inject } from 'vue'
+import { inject, ref, computed, onMounted, onBeforeUnmount } from 'vue'
+
 const navigateTo = inject('navigateTo')
 const goHome = () => navigateTo('home')
+
+// Theme detection for logo switching
+const isDark = ref(window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false)
+
+// Computed property to switch between dark/light logos
+const logoSrc = computed(() => {
+  return isDark.value ? '/logo-dark.png' : '/logo-light.png'
+})
+
+// Listen for theme changes
+let mql, themeHandler
+onMounted(() => {
+  if (window.matchMedia) {
+    mql = window.matchMedia('(prefers-color-scheme: dark)')
+    themeHandler = (e) => { isDark.value = e.matches }
+    mql.addListener?.(themeHandler)
+    mql.addEventListener?.('change', themeHandler)
+  }
+})
+
+onBeforeUnmount(() => {
+  if (mql && themeHandler) {
+    mql.removeListener?.(themeHandler)
+    mql.removeEventListener?.('change', themeHandler)
+  }
+})
 </script>
 
 <style scoped>
 .footer {
   position: relative;
   z-index: 0;
-  margin-top: auto;                 /* sits at bottom when parent is flex column */
-  padding: 24px 0;
+  margin-top: auto;
+  padding: 10px 0;
   background: transparent;          /* glass is drawn by ::before */
 }
 
-/* Glass/blur layer */
+.footer-large-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.footer-logo-image {
+  max-width: 120px;
+  width: clamp(80px, 12vw, 120px);
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.2s ease;
+}
+
+.footer-logo-image:hover {
+  transform: scale(1.05);
+}
+
+/* Simple background layer */
 .footer::before {
   content: "";
   position: absolute; inset: 0;
   z-index: -1;
-  background: #BEDBF9;         /* more opaque for readability */
-  backdrop-filter: blur(14px) saturate(160%);
-  -webkit-backdrop-filter: blur(14px) saturate(160%);
-  border-top: 1px solid rgba(255,255,255,.06);
+  background: #ffffff;         /* match navbar white background */
+  border-top: 1px solid rgba(0,0,0,0.06);
 }
 
 /* Center everything */

@@ -29,10 +29,7 @@
             </div>
             <div class="form-group">
               <label class="form-label">State</label>
-              <select class="form-select" v-model="state">
-                <option value="NSW">NSW</option>
-                <option value="VIC">VIC</option>
-              </select>
+              <div class="static-value">Victoria</div>
             </div>
           </div>
 
@@ -150,14 +147,14 @@
                 <div class="fact-icon">⚡</div>
                 <div class="fact-content">
                   <div class="fact-label">Current Rate</div>
-                  <div class="fact-value">11%</div>
+                  <div class="fact-value">11.5%</div>
                   <div class="fact-desc">Minimum employer contribution</div>
                 </div>
               </div>
               <div class="fact-item">
                 <div class="fact-icon">🎯</div>
                 <div class="fact-content">
-                  <div class="fact-label">Retire Age</div>
+                  <div class="fact-label">Retirement Age</div>
                   <div class="fact-value">60</div>
                   <div class="fact-desc">When you can access super</div>
                 </div>
@@ -518,7 +515,7 @@ export default {
 /* Title Section */
 .title-section {
   text-align: center;
-  padding: 60px 24px 40px;
+  padding: 60px 24px 0px;
   background: white;
 }
 
@@ -540,7 +537,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 20px 24px;  /* no top padding - header handles spacing */
+  padding: 0 24px 0px 24px;  /* removed bottom padding to eliminate gap with footer */
   display: grid;
   grid-template-columns: 400px 1fr;
   gap: 40px;
@@ -663,6 +660,21 @@ export default {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
+.static-value {
+  width: 100%;
+  height: 44px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 16px;
+  background: #f9fafb;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  color: #374151;
+  font-weight: 500;
+}
+
 .calculate-btn {
   width: 100%;
   height: 48px;
@@ -749,10 +761,10 @@ export default {
   margin-top: 2px;
 }
 
-.tax-color.red { background: #ef4444; }
-.tax-color.orange { background: #f97316; }
-.tax-color.green { background: #10b981; }
-.tax-color.blue { background: #3b82f6; }
+.tax-color.red { background: #ef4444 !important; }
+.tax-color.orange { background: #f97316 !important; }
+.tax-color.green { background: #10b981 !important; }
+.tax-color.blue { background: #3b82f6 !important; }
 
 .tax-info {
   flex: 1;
@@ -825,41 +837,58 @@ export default {
   border-top: 1px solid var(--border-color, #e5e7eb);
 }
 
+.navigation-hints .hint-link,
 .hint-link {
-  background: transparent;
-  border: 0;
-  padding: 6px 0;
-  color: #6B7280;
-  font-weight: 600;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  background: #4F46E5 !important;
+  border: 0 !important;
+  padding: 8px 12px !important;
+  color: white !important;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 6px !important;
+  cursor: pointer !important;
+  border-radius: 6px !important;
+  transition: background-color 0.2s !important;
 }
 
-.hint-link:hover:not(:disabled) { color: var(--primary-color, #4F46E5); }
-.hint-link:disabled { opacity: .45; cursor: not-allowed; }
+.navigation-hints .hint-link:hover:not(:disabled),
+.hint-link:hover:not(:disabled) { 
+  background: #4338CA !important;
+  color: white !important;
+}
+
+.navigation-hints .hint-link:disabled,
+.hint-link:disabled { 
+  opacity: .45; 
+  cursor: not-allowed; 
+  background: #6B7280 !important;
+}
 
 .arrow-btn:disabled { opacity: .45; cursor: not-allowed; }
 
 
+.nav-arrows .arrow-btn,
 .arrow-btn {
-  background: #f3f4f6;
-  border: none;
-  border-radius: 4px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #6b7280;
-  font-size: 14px;
+  background: #4F46E5 !important;
+  border: none !important;
+  border-radius: 4px !important;
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  color: white !important;
+  font-size: 14px !important;
+  transition: background-color 0.2s !important;
+  padding: 0 !important;
 }
 
+.nav-arrows .arrow-btn:hover,
 .arrow-btn:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: #4338CA !important;
+  color: white !important;
 }
 
 .section-subtitle {
@@ -931,33 +960,33 @@ export default {
 }
 
 .category-badge.blue {
-  background: #eff6ff;
-  color: #2563eb;
+  background: #2563eb !important;
+  color: white !important;
 }
 
 .category-badge.green {
-  background: #f0fdf4;
-  color: #16a34a;
+  background: #16a34a !important;
+  color: white !important;
 }
 
 .category-badge.purple {
-  background: #faf5ff;
-  color: #a855f7;
+  background: #a855f7 !important;
+  color: white !important;
 }
 
 .category-badge.orange {
-  background: #fff7ed;
-  color: #ea580c;
+  background: #ea580c !important;
+  color: white !important;
 }
 
 .category-badge.red {
-  background: #fef2f2;
-  color: #dc2626;
+  background: #dc2626 !important;
+  color: white !important;
 }
 
 .category-badge.gray {
-  background: #f9fafb;
-  color: #6b7280;
+  background: #6b7280 !important;
+  color: white !important;
 }
 
 .navigation-hints {
@@ -1193,7 +1222,7 @@ export default {
 .resources-section {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 60px 24px 40px;
+  padding: 60px 24px 0px;
 }
 
 .resources-title {

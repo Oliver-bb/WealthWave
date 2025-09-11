@@ -1,6 +1,6 @@
 <template>
   <footer class="footer" role="contentinfo">
-    <div class="container footer-container">
+    <div class="footer-content">
       <div class="footer-large-logo" @click="goHome" style="cursor:pointer">
         <img :src="logoSrc" alt="WealthWave" class="footer-logo-image">
       </div>
@@ -53,15 +53,18 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 0;
   margin-top: auto;
-  padding: 10px 0;
+  padding: 20px 0;
+  height: 140px;
+  display: flex;
+  align-items: center;
   background: transparent;          /* glass is drawn by ::before */
+  flex-shrink: 0;
 }
 
 .footer-large-logo {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 16px;
 }
 
 .footer-logo-image {
@@ -81,17 +84,21 @@ onBeforeUnmount(() => {
   content: "";
   position: absolute; inset: 0;
   z-index: -1;
-  background: #ffffff;         /* match navbar white background */
-  border-top: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255,255,255,0.95) !important;         /* more opaque white background */
+  border-top: 1px solid #E5E7EB !important;
+  box-shadow: 0 -1px 3px rgba(0,0,0,0.1) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* Center everything */
-.footer-container {
+.footer-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
+  width: 100%;
 }
 
 /* Brand */
@@ -109,6 +116,7 @@ onBeforeUnmount(() => {
   gap: 24px;
   flex-wrap: wrap;
   justify-content: center;
+  padding-bottom: 20px;
 }
 .footer-links a {
   color: #374151;                     /* darker than muted for legibility */
@@ -130,11 +138,14 @@ onBeforeUnmount(() => {
   .footer-links { gap: 16px; }
 }
 
-/* Dark mode */
+/* Dark mode for all pages */
 @media (prefers-color-scheme: dark) {
   .footer::before {
-    background: #030911;
-    border-top: 1px solid rgba(255,255,255,.10);
+    background: rgba(3,9,17,0.95) !important;
+    border-top: 1px solid rgba(255,255,255,.15) !important;
+    box-shadow: 0 -1px 3px rgba(0,0,0,0.2) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
   }
   .logo-text { color: #e5e7eb; }
   .footer-links a { color: #e5e7eb; }

@@ -253,6 +253,12 @@ export default {
       const yMax = Math.ceil((yMaxRaw * 1.1) / 1000) * 1000
       const interval = Math.max(1000, Math.ceil(yMax / 6 / 1000) * 1000)
 
+      // Detect if dark mode is active
+      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+      const textColor = isDarkMode ? '#e5e7eb' : '#333'
+      const lineColor = isDarkMode ? '#4b5563' : '#ddd'
+      const splitLineColor = isDarkMode ? '#374151' : '#f0f0f0'
+
       const chart = echarts.init(el)
       chart.setOption({
         grid: { left: '8%', right: '8%', bottom: '15%', top: '8%' },
@@ -262,23 +268,24 @@ export default {
           name: 'Months',
           nameLocation: 'middle',
           nameGap: 20,
-          nameTextStyle: { color: '#666', fontSize: 12 },
-          axisLine: { show: true, lineStyle: { color: '#ddd' } },
-          axisTick: { show: true, lineStyle: { color: '#ddd' } },
-          axisLabel: { color: '#666', fontSize: 11 }
+          nameTextStyle: { color: textColor, fontSize: 12 },
+          axisLine: { show: true, lineStyle: { color: lineColor } },
+          axisTick: { show: true, lineStyle: { color: lineColor } },
+          axisLabel: { color: textColor, fontSize: 11 }
         },
         yAxis: {
           type: 'value',
           name: 'Amount ($)',
           nameLocation: 'middle',
           nameGap: 35,
+          nameTextStyle: { color: textColor, fontSize: 12 },
           min: 0,
           max: yMax,
           interval,
-          axisLine: { show: true, lineStyle: { color: '#ddd' } },
-          axisTick: { show: true, lineStyle: { color: '#ddd' } },
-          axisLabel: { color: '#666', fontSize: 11, formatter: '{value}' },
-          splitLine: { show: true, lineStyle: { color: '#f0f0f0', type: 'solid' } }
+          axisLine: { show: true, lineStyle: { color: lineColor } },
+          axisTick: { show: true, lineStyle: { color: lineColor } },
+          axisLabel: { color: textColor, fontSize: 11, formatter: '{value}' },
+          splitLine: { show: true, lineStyle: { color: splitLineColor, type: 'solid' } }
         },
         series: [{
           data,
@@ -323,7 +330,7 @@ export default {
     min-height: 100vh;
     background: transparent;  /* Let dark theme show through */
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding: 0 20px 40px 20px;  /* No top padding - consistent with other pages */
+    padding: 0 20px 0px 20px;  /* Removed bottom padding to eliminate gap with footer */
   }
 
   .header {
@@ -386,6 +393,14 @@ export default {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+  }
+
+  /* Dark mode placeholder visibility */
+  @media (prefers-color-scheme: dark) {
+    .form-input::placeholder {
+      color: #9CA3AF !important;
+      opacity: 1;
+    }
   }
 
   .form-row {
@@ -508,11 +523,13 @@ export default {
   }
 
   .breakdown-item.blue {
-    background: rgba(0, 123, 255, 0.1);
+    background: #3b82f6 !important;
+    border: 1px solid #3b82f6 !important;
   }
 
   .breakdown-item.purple {
-    background: rgba(108, 117, 125, 0.1);
+    background: #8b5cf6 !important;
+    border: 1px solid #8b5cf6 !important;
   }
 
   .breakdown-item .value {
@@ -523,16 +540,16 @@ export default {
   }
 
   .breakdown-item.blue .value {
-    color: #007bff;
+    color: white !important;
   }
 
   .breakdown-item.purple .value {
-    color: #6c757d;
+    color: white !important;
   }
 
   .breakdown-item .label {
     font-size: 12px;
-    color: #666;
+    color: white !important;
   }
 
   .progress-visualization {
@@ -540,18 +557,29 @@ export default {
     padding: 24px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
   }
 
   .progress-visualization h4 {
     font-size: 16px;
     font-weight: 600;
-    color: #333;
+    color: #333 !important;
     margin: 0 0 16px 0;
   }
 
   .chart-container {
     width: 100%;
     height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Dark mode styles for progress visualization */
+  @media (prefers-color-scheme: dark) {
+    .progress-visualization h4 {
+      color: #e5e7eb !important;
+    }
   }
 
   .goal-breakdown {
@@ -624,24 +652,48 @@ export default {
 
 /* Variants */
 .is-info {
-  background: #eef2ff;
-  border-color: #c7d2fe;
-  color: #3730a3;
+  background: #eef2ff !important;
+  border-color: #c7d2fe !important;
+  color: #3730a3 !important;
 }
 .is-success {
-  background: #ecfdf5;
-  border-color: #a7f3d0;
-  color: #065f46;
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+  color: #065f46 !important;
 }
 .is-warn {
-  background: #fffbeb;
-  border-color: #fde68a;
-  color: #92400e;
+  background: #fffbeb !important;
+  border-color: #fde68a !important;
+  color: #92400e !important;
 }
 .is-error {
-  background: #fef2f2;
-  border-color: #fecaca;
-  color: #991b1b;
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+  color: #991b1b !important;
+}
+
+/* Dark mode variants */
+@media (prefers-color-scheme: dark) {
+  .is-info {
+    background: #1e3a8a !important;
+    border-color: #3b82f6 !important;
+    color: #dbeafe !important;
+  }
+  .is-success {
+    background: #065f46 !important;
+    border-color: #10b981 !important;
+    color: #d1fae5 !important;
+  }
+  .is-warn {
+    background: #92400e !important;
+    border-color: #f59e0b !important;
+    color: #fef3c7 !important;
+  }
+  .is-error {
+    background: #991b1b !important;
+    border-color: #ef4444 !important;
+    color: #fecaca !important;
+  }
 }
 
 </style>

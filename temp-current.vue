@@ -134,7 +134,7 @@ onBeforeUnmount(() => {
 })
 </script>
 
-<!-- Global (unscoped) styles used when .non-home-dark is present -->
+<!-- CLEAN DARK MODE - SIMPLIFIED -->
 <style>
 :root {
   --page-bg-dark: #0b1220;
@@ -144,31 +144,7 @@ onBeforeUnmount(() => {
   background-color: var(--page-bg-dark);
   color: var(--page-text-dark);
 }
-.non-home-dark main {
-  background-color: var(--page-bg-dark);
-  min-height: calc(100vh - var(--header-height, 137px));
-}
-
-/* Override page component backgrounds in dark mode */
-.non-home-dark .financial-literacy,
-.non-home-dark .budget-planner,
-.non-home-dark .savings-goal-calculator,
-.non-home-dark .tax-learn,
-.non-home-dark .mortgage-calculator,
-.non-home-dark .cost-estimator {
-  background: var(--page-bg-dark) !important;
-  margin-bottom: 0 !important;
-}
-
-/* Ensure page components fill the main container properly */
-.non-home-dark .financial-literacy,
-.non-home-dark .budget-planner,
-.non-home-dark .savings-goal-calculator,
-.non-home-dark .tax-learn,
-.non-home-dark .mortgage-calculator,
-.non-home-dark .cost-estimator {
-  min-height: 100%;
-}
+.non-home-dark main,
 .non-home-dark .container,
 .non-home-dark .page-section {
   background: transparent;
@@ -243,7 +219,74 @@ onBeforeUnmount(() => {
   color: #000000 !important;
 }
 
+/* Universal dark mode text - exclude budget planner and preserve color elements */
+.non-home-dark *:not(button):not(.btn):not(.tax-color):not(.category-badge):not(.item-icon):not(.resource-icon):not(.section-icon) {
+  color: #e6eaf2 !important;
+}
 
+/* Let Budget Planner handle its own styling */
+.non-home-dark .budget-planner * {
+  color: inherit;
+}
+
+/* Fix chart text visibility in dark mode */
+.non-home-dark .chart-container text,
+.non-home-dark .chart-container .echarts-legend-item,
+.non-home-dark .chart-container .echarts-legend-item text,
+.non-home-dark .chart-container div[style*="color"],
+.non-home-dark svg text,
+.non-home-dark canvas + div text {
+  fill: #e6eaf2 !important;
+  color: #e6eaf2 !important;
+}
+
+/* Make sure chart legend is fully visible */
+.non-home-dark .chart-container * {
+  color: #e6eaf2 !important;
+}
+
+/* Preserve color-coded elements in dark mode */
+.non-home-dark .tax-color.red,
+.non-home-dark .category-badge.red,
+.non-home-dark .item-icon.red,
+.non-home-dark .resource-icon.red,
+.non-home-dark .section-icon.red {
+  background: #ef4444 !important;
+  color: #dc2626 !important;
+}
+
+.non-home-dark .tax-color.orange,
+.non-home-dark .category-badge.orange,
+.non-home-dark .item-icon.orange,
+.non-home-dark .resource-icon.orange {
+  background: #f97316 !important;
+  color: #ea580c !important;
+}
+
+.non-home-dark .tax-color.green,
+.non-home-dark .category-badge.green,
+.non-home-dark .item-icon.green,
+.non-home-dark .resource-icon.green,
+.non-home-dark .section-icon.green {
+  background: #10b981 !important;
+  color: #16a34a !important;
+}
+
+.non-home-dark .tax-color.blue,
+.non-home-dark .category-badge.blue,
+.non-home-dark .item-icon.blue,
+.non-home-dark .resource-icon.blue {
+  background: #3b82f6 !important;
+  color: #2563eb !important;
+}
+
+.non-home-dark .tax-color.purple,
+.non-home-dark .category-badge.purple,
+.non-home-dark .item-icon.purple,
+.non-home-dark .resource-icon.purple {
+  background: #8b5cf6 !important;
+  color: #a855f7 !important;
+}
 
 /* Slightly dimmed text for paragraphs and descriptions in dark mode only */
 .non-home-dark p,
@@ -255,7 +298,7 @@ onBeforeUnmount(() => {
 }
 
 /* Dark mode buttons - preserve original backgrounds and styling */
-.non-home-dark button:not(.menu-toggle) {
+.non-home-dark button {
   background: inherit !important;
   color: white !important;
 }
@@ -287,19 +330,6 @@ onBeforeUnmount(() => {
   padding: 8px 16px !important;
 }
 
-/* Specific override for arrow buttons to maintain their compact size */
-.non-home-dark .arrow-btn {
-  background: #4f46e5 !important;
-  color: white !important;
-  border-radius: 4px !important;
-  width: 32px !important;
-  height: 32px !important;
-  padding: 0 !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-}
-
 /* Ensure all white background elements become dark */
 .non-home-dark [style*="background: white"],
 .non-home-dark [style*="background:#fff"],
@@ -310,27 +340,10 @@ onBeforeUnmount(() => {
   color: #e6eaf2 !important;
 }
 
-/* Dark text only for content & page header, not the site header */
-.non-home-dark :where(main, .ww-header) *:not(button):not(.btn) {
-  color: #e6eaf2 !important;
-}
-
-/* Ensure the content canvas itself is dark */
-.non-home-dark :where(main, .ww-header) {
-  background: var(--page-bg-dark) !important;  /* #0b1220 */
-}
-
-/* Inherit backgrounds inside content/page header only (not the site header) */
-.non-home-dark :where(main, .ww-header),
-.non-home-dark :where(main, .ww-header) * {
+/* Dark mode - universal background fix */
+.non-home-dark * {
   background-color: inherit !important;
 }
-
-/* Borders for content/page header only */
-.non-home-dark :where(main, .ww-header) * {
-  border-color: #374151 !important;
-}
-
 
 .non-home-dark .form-section,
 .non-home-dark .calculator-card,
@@ -344,7 +357,10 @@ onBeforeUnmount(() => {
   color: #e6eaf2 !important;
 }
 
-
+/* Remove white borders in dark mode */
+.non-home-dark * {
+  border-color: #374151 !important;
+}
 
 /* Remove problematic hover effects - let original component styles handle it */
 </style>
@@ -395,7 +411,7 @@ onBeforeUnmount(() => {
 
 /* ===== Layout & sizing ===== */
 .navbar {
-  height: 137px;  /* increased navbar height to cover logo */
+  height: 137px;  /* reasonable navbar height */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -414,8 +430,6 @@ onBeforeUnmount(() => {
   object-fit: contain;
   border-radius: 4px;
 }
-
-
 .logo-text { font-size: 22px !important; line-height: 1; font-weight: 700; letter-spacing: -0.02em; }
 
 /* Desktop links */
@@ -449,51 +463,9 @@ onBeforeUnmount(() => {
 /* ===== Responsive nav ===== */
 .menu-toggle {
   display: none;
-  width: 48px !important; 
-  height: 48px !important;
-  min-width: 48px;
-  min-height: 48px;
-  border: 1px solid currentColor; 
-  border-radius: 8px;
-  background: transparent; 
-  color: currentColor; 
-  opacity: .85;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.menu-toggle:hover {
-  opacity: 1;
-  background: rgba(0,0,0,0.05);
-}
-
-.menu-toggle:active {
-  transform: scale(0.95);
-  background: rgba(0,0,0,0.1);
-}
-
-.header.theme-slate .menu-toggle {
-  width: 48px !important; 
-  height: 48px !important;
-  min-width: 48px;
-  min-height: 48px;
-  border: 1px solid currentColor; 
-  border-radius: 8px;
-  background: transparent; 
-  color: currentColor; 
-  opacity: .85;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-}
-
-.header.theme-slate .menu-toggle:hover {
-  opacity: 1;
-  background: rgba(255,255,255,0.1);
-}
-
-.header.theme-slate .menu-toggle:active {
-  transform: scale(0.95);
-  background: rgba(255,255,255,0.15);
+  width: 40px; height: 40px;
+  border: 1px solid currentColor; border-radius: 10px;
+  background: transparent; color: currentColor; opacity: .85;
 }
 
 @media (max-width: 1200px) {
@@ -504,24 +476,17 @@ onBeforeUnmount(() => {
     position: fixed; left: 0; right: 0; top: var(--header-height, 72px);
     display: none;
     flex-direction: column; align-items: flex-start;
-    gap: 12px; padding: 20px 16px;
-    background: rgba(255,255,255,0.98);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px rgba(0,0,0,.15);
-    border-bottom: 1px solid rgba(0,0,0,0.1);
-    z-index: 100;
-    max-height: calc(100vh - var(--header-height, 72px));
-    overflow-y: auto;
+    gap: 12px; padding: 12px 16px;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 12px 30px rgba(0,0,0,.14);
+    z-index: 50;
   }
   .nav-links.open { display: flex; }
 
   .header.theme-slate .nav-links {
-    background: rgba(3, 9, 17,0.98);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 8px 32px rgba(0,0,0,.3);
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background: rgba(3, 9, 17,0.92);
   }
 }
 
@@ -554,40 +519,4 @@ onBeforeUnmount(() => {
 
 /* Optional: subtle shadow when solid */
 .header.solid { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-
-@media (max-width: 1200px) {
-  .header .nav-links {
-    background: rgba(255,255,255,0.98) !important;
-    border-bottom: 1px solid rgba(0,0,0,0.1) !important;
-  }
-  .header.theme-slate .nav-links {
-    background: rgba(3,9,17,0.98) !important;
-    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
-  }
-}
-
-/* === Lock hamburger size across themes/routes on mobile widths === */
-@media (max-width: 1200px) {
-  .header .menu-toggle {
-    --menu-size: 48px;
-    --icon-size: 24px;
-
-    width: var(--menu-size) !important;
-    height: var(--menu-size) !important;
-    min-width: var(--menu-size);
-    min-height: var(--menu-size);
-    padding: 0 !important;          /* neutralize any global button padding */
-    box-sizing: border-box;          /* padding/border won't change size */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    line-height: 0;
-  }
-  .header .menu-toggle svg {
-    width: var(--icon-size);
-    height: var(--icon-size);
-    flex: none;
-  }
-}
-
 </style>

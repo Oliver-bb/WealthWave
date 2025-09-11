@@ -134,7 +134,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 20px 24px;  /* no top padding - header handles spacing */
+  padding: 0 24px 0px 24px;  /* removed bottom padding to eliminate gap with footer */
   display: flex;
   justify-content: flex-start;
   flex: 1;
@@ -201,6 +201,14 @@ export default {
 
 .form-input::placeholder {
   color: #9ca3af;
+}
+
+/* Dark mode placeholder visibility */
+@media (prefers-color-scheme: dark) {
+  .form-input::placeholder {
+    color: #9CA3AF !important;
+    opacity: 1;
+  }
 }
 
 .form-input:focus {

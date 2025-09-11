@@ -94,12 +94,14 @@ const activeHeader = computed(() => headers[currentRoute.value] || null)
   </main>
 
   <!-- Other pages -->
-  <MortgageCalculator v-else-if="currentRoute === 'mortgage-calculator'" />
-  <BudgetPlanner v-else-if="currentRoute === 'budget-planner'" />
-  <SavingsGoalCalculator v-else-if="currentRoute === 'savings-goal-calculator'" />
-  <FinancialLiteracy v-else-if="currentRoute === 'financial-literacy'" />
-  <CostEstimator v-else-if="currentRoute === 'cost-estimator'" />
-  <TaxLearn v-else-if="currentRoute === 'tax-learn'" />
+  <main v-if="currentRoute !== 'home'">
+    <MortgageCalculator v-if="currentRoute === 'mortgage-calculator'" />
+    <BudgetPlanner v-else-if="currentRoute === 'budget-planner'" />
+    <SavingsGoalCalculator v-else-if="currentRoute === 'savings-goal-calculator'" />
+    <FinancialLiteracy v-else-if="currentRoute === 'financial-literacy'" />
+    <CostEstimator v-else-if="currentRoute === 'cost-estimator'" />
+    <TaxLearn v-else-if="currentRoute === 'tax-learn'" />
+  </main>
 
   <!-- Footer on all pages -->
   <Footer />

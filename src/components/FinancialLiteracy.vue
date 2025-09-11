@@ -278,14 +278,14 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px 20px 24px;  /* added top padding for proper spacing below header */
+  padding: 40px 24px 20px 24px;  /* reduced bottom padding to minimize gap */
 }
 
 .modules-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 24px;
-  margin-bottom: 48px;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .module-card {

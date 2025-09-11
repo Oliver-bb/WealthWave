@@ -269,7 +269,7 @@ export default {
 
 <style scoped>
 .budget-planner { min-height: 100vh; background: #f8fafc; }
-.main-content { padding: 40px 0 3rem 0; }
+.main-content { padding: 40px 0 0 0; }
 .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
 
 /* top layout: left form + right flashcards */
@@ -348,13 +348,13 @@ export default {
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
   font-size: 0.92rem;
 }
-.alert-card.warning  { border-left-color: #F59E0B; }
-.alert-card.exceeded { border-left-color: #EF4444; }
-.alert-card.good     { border-left-color: #10B981; }
+.alert-card.warning  { border-left-color: #F59E0B !important; }
+.alert-card.exceeded { border-left-color: #EF4444 !important; }
+.alert-card.good     { border-left-color: #10B981 !important; }
 
-.alert-card-inline.warning  { border-left-color: #F59E0B; }
-.alert-card-inline.exceeded { border-left-color: #EF4444; }
-.alert-card-inline.good     { border-left-color: #10B981; }
+.alert-card-inline.warning  { border-left-color: #F59E0B !important; }
+.alert-card-inline.exceeded { border-left-color: #EF4444 !important; }
+.alert-card-inline.good     { border-left-color: #10B981 !important; }
 
 .alert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 .alert-header h4 { font-size: 0.95rem; font-weight: 700; color: #111827; margin: 0; }
@@ -363,25 +363,84 @@ export default {
 
 .progress-bar { width: 100%; height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 4px; }
-.progress-fill.warning  { background: #F59E0B; }
-.progress-fill.exceeded { background: #EF4444; }
-.progress-fill.good     { background: #10B981; }
+.progress-fill.warning  { background: #F59E0B !important; }
+.progress-fill.exceeded { background: #EF4444 !important; }
+.progress-fill.good     { background: #10B981 !important; }
 
 .alert-status { font-size: .9rem; font-weight: 700; }
-.alert-card.warning  .alert-status { color: #B45309; }     
-.alert-card.exceeded .alert-status { color: #B91C1C; }     
-.alert-card.good     .alert-status { color: #065F46; }     
+.alert-card.warning  .alert-status { color: #B45309 !important; }     
+.alert-card.exceeded .alert-status { color: #B91C1C !important; }     
+.alert-card.good     .alert-status { color: #065F46 !important; }     
 
 /* 强化 inline 版本的状态色 */
-.alert-card-inline.warning  .alert-status { color: #B45309; }
-.alert-card-inline.exceeded .alert-status { color: #B91C1C; }
-.alert-card-inline.good     .alert-status { color: #065F46; }
+.alert-card-inline.warning  .alert-status { color: #B45309 !important; }
+.alert-card-inline.exceeded .alert-status { color: #B91C1C !important; }
+.alert-card-inline.good     .alert-status { color: #065F46 !important; }
 
 .alert-row.editable { align-items: center; }
 .budget-edit { display: inline-flex; align-items: center; gap: 6px; }
 .budget-edit .currency { color: #6b7280; font-size: 0.9rem; }
 .budget-input { width: 110px; padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; background: #fff; }
 .budget-input:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .budget-planner { background: transparent; }
+  
+  .form-section {
+    background: #1f2937 !important;
+    color: #e5e7eb;
+  }
+  
+  .chart-card {
+    background: #1f2937 !important;
+    color: #e5e7eb;
+  }
+  
+  .section-header h3 {
+    color: #e5e7eb !important;
+  }
+  
+  .form-group label {
+    color: #d1d5db !important;
+  }
+  
+  .form-group input {
+    background: #374151 !important;
+    border: 1px solid #4b5563 !important;
+    color: #e5e7eb !important;
+  }
+  
+  .chart-header h3 {
+    color: #e5e7eb !important;
+  }
+  
+  .alerts-header-inline h3 {
+    color: #e5e7eb !important;
+  }
+  
+  .alert-card-inline {
+    background: #374151 !important;
+  }
+  
+  .alert-header h4 {
+    color: #e5e7eb !important;
+  }
+  
+  .budget-input {
+    background: #4b5563 !important;
+    border: 1px solid #6b7280 !important;
+    color: #e5e7eb !important;
+  }
+  
+  /* Ensure colored circles remain visible in dark mode */
+  .section-icon.green { 
+    background: #10B981 !important; 
+  }
+  .section-icon.red { 
+    background: #EF4444 !important; 
+  }
+}
 
 /* responsive */
 @media (max-width: 1200px) {

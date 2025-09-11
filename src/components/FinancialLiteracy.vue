@@ -278,7 +278,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 40px 24px 20px 24px;  /* added top padding for proper spacing below header */
 }
 
 .modules-grid {

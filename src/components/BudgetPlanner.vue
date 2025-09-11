@@ -171,16 +171,31 @@ export default {
         { value: parseFloat(displayedExpenses.value.entertainment) || 0,  name: "Entertainment" },
         { value: parseFloat(displayedExpenses.value.healthcare) || 0,     name: "Healthcare" },
       ];
+      
+      // Detect dark mode
+      const isDarkMode = document.documentElement.classList.contains('non-home-dark');
+      const textColor = isDarkMode ? '#e6eaf2' : '#374151';
+      
       chart.setOption({
-        tooltip: { trigger: "item", formatter: "{b}<br/>${c} ({d}%)" },
-        legend: { bottom: 8 },
+        tooltip: { 
+          trigger: "item", 
+          formatter: "{b}<br/>${c} ({d}%)",
+          textStyle: { color: textColor }
+        },
+        legend: { 
+          bottom: 8,
+          textStyle: { color: textColor }
+        },
         series: [{
           name: "Expenses",
           type: "pie",
           radius: ["40%", "70%"],
           center: ["50%", "50%"],
           itemStyle: { borderRadius: 8, borderColor: "#fff", borderWidth: 2 },
-          label: { formatter: "{b}\n${c}" },
+          label: { 
+            formatter: "{b}\n${c}",
+            color: textColor
+          },
           data: data.length ? data : [{ value: 1, name: "No Data" }],
         }],
       });
@@ -254,7 +269,7 @@ export default {
 
 <style scoped>
 .budget-planner { min-height: 100vh; background: #f8fafc; }
-.main-content { padding: 3rem 0; }
+.main-content { padding: 40px 0 3rem 0; }
 .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
 
 /* top layout: left form + right flashcards */

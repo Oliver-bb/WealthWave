@@ -272,7 +272,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 0 24px 20px 24px;  /* no top padding - header handles spacing */
 }
 
 .estimator-container {

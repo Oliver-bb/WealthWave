@@ -1,0 +1,72 @@
+/* CLEAN DARK MODE - SIMPLE & CONSISTENT */
+
+/* Universal font consistency */
+* {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+}
+
+/* Basic dark mode styling - minimal and clean */
+.non-home-dark {
+  color: #e6eaf2;
+}
+
+/* Main cards and sections - dark background, light text */
+.non-home-dark .calculator-card,
+.non-home-dark .form-section,
+.non-home-dark .flashcard,
+.non-home-dark .breakdown-section,
+.non-home-dark .terms-card,
+.non-home-dark .video-card,
+.non-home-dark .module-card,
+.non-home-dark .chart-card {
+  background: #1f2937 !important;
+  color: #e6eaf2 !important;
+}
+
+/* Form inputs - dark with light text */
+.non-home-dark input,
+.non-home-dark select,
+.non-home-dark textarea {
+  background: #374151 !important;
+  color: #e6eaf2 !important;
+  border-color: #4b5563 !important;
+}
+
+.non-home-dark input::placeholder,
+.non-home-dark textarea::placeholder {
+  color: #9ca3af !important;
+}
+
+/* Buttons - keep simple */
+.non-home-dark button {
+  color: white;
+}
+
+/* Blue action buttons */
+.non-home-dark .start-learning-btn,
+.non-home-dark .calculate-btn,
+.non-home-dark .hint-link,
+.non-home-dark .arrow-btn {
+  background: #4f46e5 !important;
+  color: white !important;
+}
+
+/* Category badges with proper contrast */
+.non-home-dark .category-badge.red { background: #ef4444 !important; color: white !important; }
+.non-home-dark .category-badge.orange { background: #f97316 !important; color: white !important; }
+.non-home-dark .category-badge.green { background: #10b981 !important; color: white !important; }
+.non-home-dark .category-badge.blue { background: #3b82f6 !important; color: white !important; }
+.non-home-dark .category-badge.purple { background: #8b5cf6 !important; color: white !important; }
+
+/* Budget alert colors */
+.non-home-dark .alert-card-inline.warning,
+.non-home-dark .alert-card.warning { border-left-color: #F59E0B !important; }
+.non-home-dark .alert-card-inline.exceeded,
+.non-home-dark .alert-card.exceeded { border-left-color: #EF4444 !important; }
+.non-home-dark .alert-card-inline.good,
+.non-home-dark .alert-card.good { border-left-color: #10B981 !important; }
+
+/* Chart text visibility */
+.non-home-dark .chart-container * {
+  color: #e6eaf2 !important;
+}

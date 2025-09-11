@@ -321,9 +321,9 @@ export default {
 <style scoped>
   .savings-goal-calculator {
     min-height: 100vh;
-    background: #f8f9fa;
+    background: transparent;  /* Let dark theme show through */
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding: 40px 20px;
+    padding: 0 20px 40px 20px;  /* No top padding - consistent with other pages */
   }
 
   .header {

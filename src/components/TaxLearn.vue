@@ -467,7 +467,7 @@ export default {
 <style scoped>
 .tax-learn {
   min-height: 100vh;
-  background: #f8fafc;
+  background: transparent;  /* Let dark theme from HTML root show through */
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -540,7 +540,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px;
+  padding: 0 24px 20px 24px;  /* no top padding - header handles spacing */
   display: grid;
   grid-template-columns: 400px 1fr;
   gap: 40px;

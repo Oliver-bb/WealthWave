@@ -53,8 +53,8 @@ onBeforeUnmount(() => {
   position: relative;
   z-index: 0;
   margin-top: auto;
-  padding: 20px 0;
-  height: 140px;
+  padding: 16px 0;
+  height: 120px;
   display: flex;
   align-items: center;
   background: transparent;          /* glass is drawn by ::before */
@@ -84,7 +84,7 @@ onBeforeUnmount(() => {
   content: "";
   position: absolute; inset: 0;
   z-index: -1;
-  background: rgba(255,255,255,0.95) !important;         /* more opaque white background */
+  background: rgba(255,255,255,0.7) !important;         /* more opaque white background */
   border-top: 1px solid #E5E7EB !important;
   box-shadow: 0 -1px 3px rgba(0,0,0,0.1) !important;
   backdrop-filter: blur(12px) !important;
@@ -141,7 +141,7 @@ onBeforeUnmount(() => {
 /* Dark mode for all pages */
 @media (prefers-color-scheme: dark) {
   .footer::before {
-    background: rgba(3,9,17,0.95) !important;
+    background: rgba(3,9,17,0.7) !important;
     border-top: 1px solid rgba(255,255,255,.15) !important;
     box-shadow: 0 -1px 3px rgba(0,0,0,0.2) !important;
     backdrop-filter: blur(12px) !important;

@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:iter1:snapshot": "vite build --base=/iteration1/ --outDir public/iteration1",
     "preview": "vite preview"
   },
   "dependencies": {

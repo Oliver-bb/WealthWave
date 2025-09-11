@@ -79,16 +79,14 @@ onBeforeUnmount(() => {
   transform: scale(1.05);
 }
 
-/* Simple background layer */
+/* Simple background layer - consistent across all pages */
 .footer::before {
   content: "";
   position: absolute; inset: 0;
   z-index: -1;
-  background: rgba(255,255,255,0.7) !important;         /* more opaque white background */
+  background: #ffffff !important;                       /* solid white background for complete consistency */
   border-top: 1px solid #E5E7EB !important;
   box-shadow: 0 -1px 3px rgba(0,0,0,0.1) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
 }
 
 /* Center everything */
@@ -138,14 +136,12 @@ onBeforeUnmount(() => {
   .footer-links { gap: 16px; }
 }
 
-/* Dark mode for all pages */
+/* Dark mode for all pages - consistent across home and other pages */
 @media (prefers-color-scheme: dark) {
   .footer::before {
-    background: rgba(3,9,17,0.7) !important;
+    background: #111827 !important;                      /* solid dark background for complete consistency */
     border-top: 1px solid rgba(255,255,255,.15) !important;
     box-shadow: 0 -1px 3px rgba(0,0,0,0.2) !important;
-    backdrop-filter: blur(12px) !important;
-    -webkit-backdrop-filter: blur(12px) !important;
   }
   .logo-text { color: #e5e7eb; }
   .footer-links a { color: #e5e7eb; }

@@ -37,10 +37,8 @@
           <li><a href="#" :class="{active: currentRoute==='tax-learn'}" @click.prevent="go('tax-learn')">Financial Concepts</a></li>
           <li><a href="#" :class="{active: currentRoute==='budget-planner'}" @click.prevent="go('budget-planner')">Budget Planner</a></li>
           <li><a href="#" :class="{active: currentRoute==='savings-goal-calculator'}" @click.prevent="go('savings-goal-calculator')">Savings Goals</a></li>
+          <li><a href="#" :class="{active: currentRoute==='mortgage-calculator'}" @click.prevent="go('mortgage-calculator')">Mortgage Calculator</a></li>
           <li><a href="#" :class="{active: currentRoute==='financial-literacy'}" @click.prevent="go('financial-literacy')">Video Guides</a></li>
-       <!--   <li><a href="#" :class="{active: currentRoute==='cost-estimator'}" @click.prevent="go('cost-estimator')">Study & Living Costs</a></li> -->
-          
-      <!--    <li><a href="#" :class="{active: currentRoute==='mortgage-calculator'}" @click.prevent="go('mortgage-calculator')">Home & Mortgage Planning</a></li> -->
         </ul>
       </nav>
     </div>

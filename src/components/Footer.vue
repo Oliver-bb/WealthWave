@@ -99,7 +99,7 @@ onBeforeUnmount(() => {
 }
 .brand-blurb{
   margin:0; max-width:560px; font-size:14px; line-height:1.65;
-  color:#9ca3af; text-align:justify; text-justify:inter-word; hyphens:auto; -webkit-hyphens:auto;
+  color:white; text-align:justify; text-justify:inter-word; hyphens:auto; -webkit-hyphens:auto;
 }
 
 /* Right column: vertical nav */
@@ -126,7 +126,7 @@ onBeforeUnmount(() => {
 @media (prefers-color-scheme: light){
   .footer::before{ background:#f8fafc; border-top:1px solid #e5e7eb; }
   .brand-title{ color:#111827; }
-  .brand-blurb{ color:#6b7280; }
+  .brand-blurb{ color:black; }
   .links-title, .links-list a{ color:#374151; }
   .links-list a:hover{ color:var(--primary-color); }
 }

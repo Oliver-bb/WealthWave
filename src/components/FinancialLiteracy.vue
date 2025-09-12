@@ -388,12 +388,12 @@ export default {
 }
 
 .star {
-  color: #d1d5db;
+  color: #9ca3af !important;
   font-size: 14px;
 }
 
 .star.filled {
-  color: #fbbf24;
+  color: #fbbf24 !important;
 }
 
 .rating-value {
@@ -445,19 +445,19 @@ export default {
 
 .start-learning-btn {
   width: 100%;
-  height: 40px;
-  background: #4f46e5;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
+  background: #4F46E5 !important;
+  color: #fff !important;
+  border: 0 !important;
+  padding: .9rem !important;
+  border-radius: 10px !important;
+  font-weight: 700 !important;
   cursor: pointer;
+  font-size: 14px;
   transition: background-color 0.2s;
 }
 
 .start-learning-btn:hover {
-  background: #4338ca;
+  background: #4338CA !important;
 }
 
 /* Progress Section */
@@ -631,6 +631,83 @@ export default {
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .financial-literacy {
+    background: transparent;
+  }
+  
+  .module-card {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+  
+  .module-title {
+    color: #e5e7eb;
+  }
+  
+  .module-description {
+    color: #d1d5db;
+  }
+  
+  /* Star rating styles for dark mode */
+  .star {
+    color: #4b5563 !important;
+  }
+  
+  .star.filled {
+    color: #fbbf24 !important;
+  }
+  
+  .rating-value {
+    color: #d1d5db !important;
+  }
+  
+  /* Difficulty badge colors for dark mode */
+  .difficulty.easy {
+    background: #16a34a !important;
+    color: white !important;
+  }
+  
+  .difficulty.medium {
+    background: #d97706 !important;
+    color: white !important;
+  }
+  
+  .difficulty.advanced {
+    background: #dc2626 !important;
+    color: white !important;
+  }
+  
+  .video-modal-content {
+    background: #1f2937;
+    color: #e5e7eb;
+  }
+  
+  .video-title {
+    color: #e5e7eb;
+  }
+  
+  .video-description {
+    color: #d1d5db;
+  }
+  
+  .video-difficulty.easy {
+    background: #16a34a !important;
+    color: white !important;
+  }
+  
+  .video-difficulty.medium {
+    background: #d97706 !important;
+    color: white !important;
+  }
+  
+  .video-difficulty.advanced {
+    background: #dc2626 !important;
+    color: white !important;
+  }
 }
 
 @media (max-width: 768px) {

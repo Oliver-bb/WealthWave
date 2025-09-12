@@ -35,9 +35,9 @@
         <ul class="nav-links" :class="{ open: menuOpen }">
           <li><a href="#" :class="{ active: currentRoute === 'home' }" @click.prevent="go('home')">Home</a></li>
           <li><a href="#" :class="{active: currentRoute==='tax-learn'}" @click.prevent="go('tax-learn')">Financial Concepts</a></li>
-          <li><a href="#" :class="{active: currentRoute==='financial-literacy'}" @click.prevent="go('financial-literacy')">Video Guides</a></li>
           <li><a href="#" :class="{active: currentRoute==='budget-planner'}" @click.prevent="go('budget-planner')">Budget Planner</a></li>
           <li><a href="#" :class="{active: currentRoute==='savings-goal-calculator'}" @click.prevent="go('savings-goal-calculator')">Savings Goals</a></li>
+          <li><a href="#" :class="{active: currentRoute==='financial-literacy'}" @click.prevent="go('financial-literacy')">Video Guides</a></li>
        <!--   <li><a href="#" :class="{active: currentRoute==='cost-estimator'}" @click.prevent="go('cost-estimator')">Study & Living Costs</a></li> -->
           
       <!--    <li><a href="#" :class="{active: currentRoute==='mortgage-calculator'}" @click.prevent="go('mortgage-calculator')">Home & Mortgage Planning</a></li> -->
@@ -255,7 +255,7 @@ onBeforeUnmount(() => {
 }
 
 /* Dark mode buttons - preserve original backgrounds and styling */
-.non-home-dark button:not(.menu-toggle) {
+.non-home-dark button:not(.menu-toggle):not(.start-learning-btn):not(.calculate-btn):not(.primary-btn):not(.hint-link):not(.arrow-btn) {
   background: inherit !important;
   color: white !important;
 }
@@ -278,7 +278,10 @@ onBeforeUnmount(() => {
 .non-home-dark button[style*="background:#4f46e5"] {
   background: #4f46e5 !important;
   color: white !important;
-  border-radius: 6px !important;
+  border-radius: 10px !important;
+  padding: .9rem !important;
+  font-weight: 700 !important;
+  border: 0 !important;
 }
 
 /* Ensure all buttons have consistent rounded corners and padding */

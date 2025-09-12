@@ -69,6 +69,7 @@ onBeforeUnmount(() => {
 
 .footer-logo-image {
   max-width: 120px;
+  max-height: 80px;
   width: clamp(80px, 12vw, 120px);
   height: auto;
   object-fit: contain;

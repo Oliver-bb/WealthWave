@@ -751,6 +751,12 @@ export default {
   padding: 12px;
   border-radius: 8px;
   background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  transition: border-color 0.2s ease;
+}
+
+.tax-item:hover {
+  border-color: #d1d5db;
 }
 
 .tax-color {

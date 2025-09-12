@@ -52,7 +52,7 @@
               <input 
                 type="text" 
                 v-model="location" 
-                placeholder="Enter country or city" 
+                placeholder="e.g., Melbourne, Australia" 
                 class="form-input"
               />
             </div>

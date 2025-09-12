@@ -14,15 +14,15 @@
               </div>
               <div class="form-group">
                 <label>Salary</label>
-                <input type="text" v-model="income.salary" placeholder="Enter your monthly salary" />
+                <input type="number" v-model="income.salary" placeholder="e.g., 5000 (monthly salary)" min="0" max="999999" />
               </div>
               <div class="form-group">
                 <label>Investments</label>
-                <input type="text" v-model="income.investments" placeholder="Investment returns" />
+                <input type="number" v-model="income.investments" placeholder="e.g., 200 (monthly investment returns)" min="0" max="99999" />
               </div>
               <div class="form-group">
                 <label>Other Income</label>
-                <input type="text" v-model="income.other" placeholder="Freelance, side jobs, etc." />
+                <input type="number" v-model="income.other" placeholder="e.g., 500 (freelance, side jobs)" min="0" max="99999" />
               </div>
             </div>
 
@@ -34,23 +34,23 @@
               </div>
               <div class="form-group">
                 <label>Housing</label>
-                <input type="text" v-model="expenses.housing" placeholder="Rent, mortgage, utilities" />
+                <input type="number" v-model="expenses.housing" placeholder="e.g., 1500 (rent, utilities)" min="0" max="99999" />
               </div>
               <div class="form-group">
                 <label>Transportation</label>
-                <input type="text" v-model="expenses.transportation" placeholder="Car payments, gas, public transport" />
+                <input type="number" v-model="expenses.transportation" placeholder="e.g., 400 (car, transport)" min="0" max="99999" />
               </div>
               <div class="form-group">
                 <label>Food & Dining</label>
-                <input type="text" v-model="expenses.food" placeholder="Groceries, restaurants" />
+                <input type="number" v-model="expenses.food" placeholder="e.g., 600 (groceries, dining)" min="0" max="99999" />
               </div>
               <div class="form-group">
                 <label>Entertainment</label>
-                <input type="text" v-model="expenses.entertainment" placeholder="Movies, subscriptions, hobbies" />
+                <input type="number" v-model="expenses.entertainment" placeholder="e.g., 300 (subscriptions, hobbies)" min="0" max="99999" />
               </div>
               <div class="form-group">
                 <label>Healthcare</label>
-                <input type="text" v-model="expenses.healthcare" placeholder="Insurance, medical expenses" />
+                <input type="number" v-model="expenses.healthcare" placeholder="e.g., 150 (insurance, medical)" min="0" max="99999" />
               </div>
             </div>
 
@@ -134,13 +134,13 @@ export default {
   name: "BudgetPlanner",
   setup() {
     // ===== Left form =====
-    const income = ref({ salary: "5800", investments: "0", other: "0" });
+    const income = ref({ salary: "", investments: "", other: "" });
     const expenses = ref({
-      housing: "1800",
-      transportation: "650",
-      food: "400",
-      entertainment: "200",
-      healthcare: "150",
+      housing: "",
+      transportation: "",
+      food: "",
+      entertainment: "",
+      healthcare: "",
     });
 
     // 用于“已计算”的快照：仅点击按钮后更新
@@ -219,11 +219,11 @@ export default {
     ];
 
     const budgets = ref({
-      housing: 2000,
-      transportation: 500,
-      food: 600,
-      entertainment: 300,
-      healthcare: 200,
+      housing: "",
+      transportation: "",
+      food: "",
+      entertainment: "",
+      healthcare: "",
     });
 
     const displayedBudgets = ref({ ...budgets.value });

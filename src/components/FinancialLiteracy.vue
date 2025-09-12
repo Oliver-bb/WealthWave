@@ -694,6 +694,16 @@ export default {
     color: #d1d5db;
   }
   
+  /* Ensure video thumbnail hover works properly in dark mode */
+  .play-overlay {
+    background: rgba(0, 0, 0, 0.5) !important;
+  }
+  
+  .play-button {
+    background: rgba(31, 41, 55, 0.9) !important;
+    color: #ffffff !important;
+  }
+  
   .video-difficulty.easy {
     background: #16a34a !important;
     color: white !important;

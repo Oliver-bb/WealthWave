@@ -15,7 +15,16 @@
             <label class="form-label">Annual Gross Salary</label>
             <div class="input-container">
               <span class="currency-symbol">$</span>
-              <input type="text" class="form-input" v-model="grossSalary">
+              <input 
+                type="number" 
+                class="form-input" 
+                v-model="grossSalary"
+                min="0"
+                max="999999"
+                step="1000"
+                placeholder="e.g., 80000 (Enter your annual salary)"
+                @input="validateSalaryInput"
+              >
             </div>
           </div>
 
@@ -39,7 +48,7 @@
             <h3 class="breakdown-title">Your Breakdown</h3>
             <div class="salary-display">
               <div class="salary-label">Gross Salary</div>
-              <div class="salary-amount">${{ formatNumber(parseFloat(grossSalary.replace(/,/g, '')) || 0) }}</div>
+              <div class="salary-amount">${{ formatNumber(calculatedResults.grossSalary || 0) }}</div>
               <div class="progress-bar">
                 <div class="progress-fill"></div>
               </div>
@@ -116,7 +125,7 @@
             <div class="navigation-hints">
         <button
           type="button"
-          class="hint-link"
+          class="calculate-btn"
           @click="prevCard"
           :disabled="atStart"
           aria-label="Previous term"
@@ -127,7 +136,7 @@
 
         <button
           type="button"
-          class="hint-link"
+          class="calculate-btn"
           @click="nextCard"
           :disabled="atEnd"
           aria-label="Next term"
@@ -213,10 +222,11 @@ export default {
   name: 'TaxLearn',
   data() {
     return {
-      grossSalary: '75,000',
+      grossSalary: '',
       payFrequency: 'Annual',
       state: 'NSW',
       calculatedResults: {
+        grossSalary: 0,
         incomeTax: 0,
         medicareLevy: 0,
         netPay: 0,
@@ -398,8 +408,25 @@ export default {
     }
   },
   methods: {
+    validateSalaryInput(event) {
+      const value = parseFloat(event.target.value)
+      if (value > 999999) {
+        alert('Maximum salary limit is $999,999. Please enter a lower amount.')
+        // Optionally reset to the limit
+        this.grossSalary = 999999
+      } else if (value < 0) {
+        alert('Salary cannot be negative. Please enter a positive amount.')
+        this.grossSalary = 0
+      }
+    },
     calculateTax() {
-      const salary = parseFloat(this.grossSalary.replace(/,/g, '')) || 0
+      // Validate input
+      if (!this.grossSalary || this.grossSalary <= 0) {
+        alert('Please enter a valid salary amount')
+        return
+      }
+      
+      const salary = parseFloat(this.grossSalary) || 0
       
       // Australian tax brackets for 2023-24
       let incomeTax = 0
@@ -425,6 +452,7 @@ export default {
       const netPay = salary - incomeTax - medicareLevy
       
       this.calculatedResults = {
+        grossSalary: Math.round(salary),
         incomeTax: Math.round(incomeTax),
         medicareLevy: Math.round(medicareLevy),
         netPay: Math.round(netPay),
@@ -843,31 +871,28 @@ export default {
   border-top: 1px solid var(--border-color, #e5e7eb);
 }
 
-.navigation-hints .hint-link,
-.hint-link {
-  background: #4F46E5 !important;
-  border: 0 !important;
+/* Navigation buttons using calculate-btn class */
+.navigation-hints .calculate-btn {
+  width: auto !important;
+  height: auto !important;
   padding: 8px 12px !important;
-  color: white !important;
-  font-weight: 600 !important;
   display: inline-flex !important;
   align-items: center !important;
   gap: 6px !important;
-  cursor: pointer !important;
-  border-radius: 6px !important;
-  transition: background-color 0.2s !important;
-}
-
-.navigation-hints .hint-link:hover:not(:disabled),
-.hint-link:hover:not(:disabled) { 
-  background: #4338CA !important;
+  font-size: 14px !important;
   color: white !important;
 }
 
-.navigation-hints .hint-link:disabled,
-.hint-link:disabled { 
-  opacity: .45; 
-  cursor: not-allowed; 
+/* Ensure all text inside navigation buttons is white */
+.navigation-hints .calculate-btn .hint-text,
+.navigation-hints .calculate-btn .hint-icon,
+.navigation-hints .calculate-btn span {
+  color: white !important;
+}
+
+.navigation-hints .calculate-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
   background: #6B7280 !important;
 }
 
@@ -876,7 +901,7 @@ export default {
 
 .nav-arrows .arrow-btn,
 .arrow-btn {
-  background: #4F46E5 !important;
+  background: #4f46e5 !important;
   border: none !important;
   border-radius: 4px !important;
   width: 32px !important;

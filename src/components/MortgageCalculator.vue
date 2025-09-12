@@ -11,9 +11,11 @@
             <span class="input-prefix">$</span>
             <input 
               v-model="loanAmount" 
-              type="text" 
+              type="number" 
               class="form-input" 
-              placeholder="500,000"
+              placeholder="e.g., 500000 (loan amount in dollars)"
+              min="0"
+              max="9999999"
             />
           </div>
         </div>
@@ -24,9 +26,12 @@
             <div class="input-container">
               <input 
                 v-model="interestRate" 
-                type="text" 
+                type="number" 
                 class="form-input" 
-                placeholder="3.75"
+                placeholder="e.g., 3.75 (annual interest rate)"
+                min="0"
+                max="20"
+                step="0.01"
               />
               <span class="input-suffix">%</span>
             </div>
@@ -37,9 +42,11 @@
             <div class="input-container">
               <input 
                 v-model="loanTerm" 
-                type="text" 
+                type="number" 
                 class="form-input" 
-                placeholder="30"
+                placeholder="e.g., 30 (loan term in years)"
+                min="1"
+                max="50"
               />
               <span class="input-suffix">years</span>
             </div>
@@ -86,9 +93,9 @@ export default {
   name: 'MortgageCalculator',
   data() {
     return {
-      loanAmount: '500,000',
-      interestRate: '3.75',
-      loanTerm: '30',
+      loanAmount: '',
+      interestRate: '',
+      loanTerm: '',
       monthlyPayment: null,
       totalPayment: null,
       totalInterest: null,
@@ -97,9 +104,22 @@ export default {
   },
   methods: {
     calculatePayment() {
-      const principal = parseFloat(this.loanAmount.replace(/,/g, ''))
+      const principal = parseFloat(this.loanAmount)
       const rate = parseFloat(this.interestRate) / 100 / 12
       const payments = parseFloat(this.loanTerm) * 12
+      
+      if (!principal || principal <= 0) {
+        alert('Please enter a valid loan amount')
+        return
+      }
+      if (!this.interestRate || parseFloat(this.interestRate) <= 0) {
+        alert('Please enter a valid interest rate')
+        return
+      }
+      if (!this.loanTerm || parseFloat(this.loanTerm) <= 0) {
+        alert('Please enter a valid loan term')
+        return
+      }
       
       if (principal && rate && payments) {
         const monthlyPayment = principal * (rate * Math.pow(1 + rate, payments)) / (Math.pow(1 + rate, payments) - 1)

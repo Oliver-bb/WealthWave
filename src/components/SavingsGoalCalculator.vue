@@ -7,10 +7,12 @@
         <div class="form-group">
           <label>Savings Goal</label>
           <input
-            type="text"
+            type="number"
             v-model="savingsGoal"
-            placeholder="Enter your target amount"
+            placeholder="e.g., 50000 (savings goal)"
             class="form-input"
+            min="1"
+            max="9999999"
           />
         </div>
 
@@ -18,10 +20,12 @@
           <div class="form-group timeline-group">
             <label>Timeline</label>
             <input
-              type="text"
+              type="number"
               v-model="timeline"
-              placeholder="Duration"
+              placeholder="e.g., 24 (duration)"
               class="form-input timeline-input"
+              min="1"
+              max="600"
             />
           </div>
           <div class="form-group unit-group">
@@ -36,20 +40,25 @@
         <div class="form-group">
           <label>Initial Deposit (Optional)</label>
           <input
-            type="text"
+            type="number"
             v-model="initialDeposit"
-            placeholder="Amount you already have saved"
+            placeholder="e.g., 5000 (current savings)"
             class="form-input"
+            min="0"
+            max="9999999"
           />
         </div>
 
         <div class="form-group">
           <label>Interest Rate (Annual %)</label>
           <input
-            type="text"
+            type="number"
             v-model="interestRate"
-            placeholder="Expected annual interest rate"
+            placeholder="e.g., 3.5 (interest rate %)"
             class="form-input"
+            min="0"
+            max="50"
+            step="0.1"
           />
         </div>
 
@@ -107,11 +116,11 @@ export default {
   name: 'SavingsGoalCalculator',
   data() {
     return {
-      savingsGoal: '10,000',
-      timeline: '12',
+      savingsGoal: '',
+      timeline: '',
       timeUnit: 'months',
-      initialDeposit: '1,000',
-      interestRate: '3.5',
+      initialDeposit: '',
+      interestRate: '',
       // keep numeric
       monthlyAmount: 0,
       weeklyAmount: 0,
@@ -483,6 +492,7 @@ export default {
     background: #e8f5e8;
     padding: 24px;
     border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
   .savings-plan h3 {
@@ -577,8 +587,32 @@ export default {
 
   /* Dark mode styles for progress visualization */
   @media (prefers-color-scheme: dark) {
+    .progress-visualization {
+      background: #1f2937 !important;
+      color: #e5e7eb;
+    }
+    
     .progress-visualization h4 {
       color: #e5e7eb !important;
+    }
+    
+    .savings-plan {
+      background: #1f2937 !important;
+      color: #e5e7eb;
+      border-radius: 12px !important;
+    }
+    
+    .savings-plan h3 {
+      color: #e5e7eb !important;
+    }
+    
+    .monthly-amount .label {
+      color: #d1d5db !important;
+    }
+    
+    .form-section {
+      background: #1f2937 !important;
+      color: #e5e7eb;
     }
   }
 

@@ -1,25 +1,43 @@
 <template>
   <footer class="footer" role="contentinfo">
-    <div class="footer-content">
-      <div class="footer-large-logo" @click="goHome" style="cursor:pointer">
-        <img :src="logoSrc" alt="WealthWave" class="footer-logo-image">
+  <div class="footer-content">
+    <!-- Left: logo + copy (logo on the left, text nudged left) -->
+    <div class="brand-block">
+      <img :src="logoSrc" alt="WealthWave" class="footer-logo" @click="goHome" />
+      <div class="brand-copy">
+        <h4 class="brand-title">WealthWave</h4>
+        <p class="brand-blurb">
+          WealthWave is a simple, practical platform designed to help you take control of your money.
+          From learning financial concepts to setting savings goals, planning budgets, and understanding tax,
+          our tools make financial literacy easy, trackable, and doable for everyone.
+        </p>
       </div>
-      
-      <nav class="footer-links" aria-label="Footer">
-        <!-- All links route to home -->
-        <a href="#" @click.prevent="goHome">About</a>
-        <a href="#" @click.prevent="goHome">Contact</a>
-        <a href="#" @click.prevent="goHome">Privacy</a>
-      </nav>
     </div>
-  </footer>
+
+    <!-- Right: explore list -->
+    <nav class="footer-links" aria-label="Explore">
+      
+      <ul class="links-list">
+  <li><a href="#home" @click.prevent="go('home')">Home</a></li>
+  <li><a href="#tax-learn" @click.prevent="go('tax-learn')">Financial Concepts</a></li>
+  <li><a href="#budget-planner" @click.prevent="go('budget-planner')">Budget Planner</a></li>
+  <li><a href="#savings-goal-calculator" @click.prevent="go('savings-goal-calculator')">Savings Goals</a></li>
+  <li><a href="#mortgage-calculator" @click.prevent="go('mortgage-calculator')">Mortgage Calculator</a></li>
+  <li><a href="#financial-literacy" @click.prevent="go('financial-literacy')">Video Guides</a></li>
+</ul>
+
+    </nav>
+  </div>
+</footer>
 </template>
+
 
 <script setup>
 import { inject, ref, computed, onMounted, onBeforeUnmount } from 'vue'
 
 const navigateTo = inject('navigateTo')
 const goHome = () => navigateTo('home')
+const go = (r) => navigateTo(r)
 
 // Theme detection for logo switching
 const isDark = ref(window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false)
@@ -51,101 +69,64 @@ onBeforeUnmount(() => {
 <style scoped>
 .footer {
   position: relative;
-  z-index: 0;
   margin-top: auto;
-  padding: 16px 0;
-  height: 120px;
-  display: flex;
-  align-items: center;
-  background: transparent;          /* glass is drawn by ::before */
-  flex-shrink: 0;
+  padding: 20px 0;
+  background: transparent;
+}
+.footer::before{
+  content:""; position:absolute; inset:0; z-index:-1;
+  background:#0f172a;           /* dark strip like your site */
+  border-top:1px solid rgba(255,255,255,.12);
 }
 
-.footer-large-logo {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* 2 columns, aligned like the reference */
+.footer-content{
+  max-width:1200px; margin:0 auto; padding:0 12px;
+  display:grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr);
+  gap:48px; align-items:start;
 }
 
-.footer-logo-image {
-  max-width: 120px;
-  max-height: 80px;
-  width: clamp(80px, 12vw, 120px);
-  height: auto;
-  object-fit: contain;
-  transition: transform 0.2s ease;
+/* Left column: logo + text */
+.brand-block{
+  display:grid; grid-template-columns: 72px 1fr; gap:60px; align-items:start;
+}
+.footer-logo{ width:130px; height:130px; object-fit:contain; cursor:pointer; }
+.brand-title{ margin:0 0 8px; font-weight:800; text-transform: none; font-size:18px; letter-spacing:.2px; color:#e5e7eb;  }
+.brand-blurb{
+  margin:0; max-width:560px; font-size:14px; line-height:1.65;
+  color:#9ca3af; text-align:justify; text-justify:inter-word; hyphens:auto; -webkit-hyphens:auto;
 }
 
-.footer-logo-image:hover {
-  transform: scale(1.05);
-}
+/* Right column: vertical nav */
+.footer-links{ background:transparent !important; }  /* avoid any global card bg */
+.links-title{ margin:0 0 12px; font-weight:700; font-size:14px; color:#e5e7eb;  letter-spacing:.3px; }
+.links-list{ list-style:none; margin:0; padding:0; display:grid; gap:10px; }
+.links-list a{ color:#e5e7eb; text-decoration:none; font-weight:600; }
+.links-list a:hover{ color:#c7d2fe; }
 
-/* Simple background layer - consistent across all pages */
-.footer::before {
-  content: "";
-  position: absolute; inset: 0;
-  z-index: -1;
-  background: #ffffff !important;                       /* solid white background for complete consistency */
-  border-top: 1px solid #E5E7EB !important;
-  box-shadow: 0 -1px 3px rgba(0,0,0,0.1) !important;
-}
 
-/* Center everything */
-.footer-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-}
-
-/* Brand */
-.footer-brand {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.logo-mark { width: 24px; height: 24px; }
-.logo-text { font-weight: 700; font-size: 18px; color: #111827; }   /* stronger contrast */
-
-/* Links */
-.footer-links {
-  display: flex;
-  gap: 24px;
-  flex-wrap: wrap;
-  justify-content: center;
-  padding-bottom: 20px;
-}
-.footer-links a {
-  color: #374151;                     /* darker than muted for legibility */
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: color .2s ease;
-}
-.footer-links a:hover { color: var(--primary-color); }
-.footer-links a:focus-visible {
-  outline: none;
-  box-shadow: 0 0 0 2px var(--primary-color);
-  border-radius: 6px;
-  padding: 2px 4px;
-}
-
-/* Small screens */
-@media (max-width: 480px) {
-  .footer-links { gap: 16px; }
-}
-
-/* Dark mode for all pages - consistent across home and other pages */
-@media (prefers-color-scheme: dark) {
-  .footer::before {
-    background: #111827 !important;                      /* solid dark background for complete consistency */
-    border-top: 1px solid rgba(255,255,255,.15) !important;
-    box-shadow: 0 -1px 3px rgba(0,0,0,0.2) !important;
+/* Nudge footer logo a bit left on larger screens */
+@media (min-width: 900px) {
+  .footer-logo {
+    transform: translateX(-50px);  /* adjust -6/-8/-12px to taste */
   }
-  .logo-text { color: #e5e7eb; }
-  .footer-links a { color: #e5e7eb; }
-  .footer-links a:hover { color: #c7d2fe; }
 }
+
+
+/* Mobile stacking */
+@media (max-width: 900px){
+  .footer-content{ grid-template-columns:1fr; gap:28px; }
+  .brand-block{ grid-template-columns:64px 1fr; }
+  .brand-blurb{ text-align:left; max-width:none; }
+}
+
+/* Light theme (if user forces light) */
+@media (prefers-color-scheme: light){
+  .footer::before{ background:#f8fafc; border-top:1px solid #e5e7eb; }
+  .brand-title{ color:#111827; }
+  .brand-blurb{ color:#6b7280; }
+  .links-title, .links-list a{ color:#374151; }
+  .links-list a:hover{ color:var(--primary-color); }
+}
+
 </style>

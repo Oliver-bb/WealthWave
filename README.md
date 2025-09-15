@@ -23,7 +23,7 @@ A lightweight Vue 3 (Vite) app that helps students & newcomers understand everyd
 ---
 
 ## 🚀 Live Demo
-- **URL:** https://main.d17hcgnbwdrpcf.amplifyapp.com/  
+- **URL:** https://main.d38clbyadaedqu.amplifyapp.com   
 - **Login (demo):** `admin / admin28` *(showcase only—rotate/remove for production)*
 
 ---

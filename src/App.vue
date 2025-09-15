@@ -34,28 +34,28 @@ provide('currentRoute', currentRoute)
 const headers = {
   'mortgage-calculator': {
     title: 'Home Mortgage Calculator',
-    subtitle: 'Calculate repayments easily with accurate and clear mortgage estimates.',
+    subtitle: 'Calculate repayments easily with accurate and clear mortgage estimates',
     icon: 'mortgage',
   },
   'budget-planner': {
     title: 'Personal Budget Planner',
-    subtitle: 'Manage income, expenses, and savings with smart financial balance tracking.',
+    subtitle: 'Manage income, expenses, and savings with smart financial balance tracking',
   },
   'savings-goal-calculator': {
     title: 'Savings Goal Calculator',
-    subtitle: 'Set a target amount and date, then track the contributions you need to stay on course.',
+    subtitle: 'Set a target amount and date, then track the contributions you need to stay on course',
   },
   'financial-literacy': {
     title: 'Financial Literacy Hub',
-    subtitle: 'Learn practical money skills with curated videos on budgeting, saving, and tax.',
+    subtitle: 'Learn practical money skills with curated videos on budgeting, saving, and tax',
   },
   'cost-estimator': {
     title: 'Education Cost Estimator',
-    subtitle: 'Get clear insights into tuition, living, and study costs tailored to your goals.',
+    subtitle: 'Get clear insights into tuition, living, and study costs tailored to your goals',
   },
   'tax-learn': {
     title: 'Financial Concepts',
-    subtitle: 'Understand Australian taxation and superannuation with with flashcards of key terms and a take-home pay calculator.',
+    subtitle: 'Understand Australian taxation and superannuation with flashcards of key terms and a take-home pay calculator',
   },
 }
 const activeHeader = computed(() => headers[currentRoute.value] || null)
@@ -94,13 +94,15 @@ const activeHeader = computed(() => headers[currentRoute.value] || null)
   </main>
 
   <!-- Other pages -->
-  <MortgageCalculator v-else-if="currentRoute === 'mortgage-calculator'" />
-  <BudgetPlanner v-else-if="currentRoute === 'budget-planner'" />
-  <SavingsGoalCalculator v-else-if="currentRoute === 'savings-goal-calculator'" />
-  <FinancialLiteracy v-else-if="currentRoute === 'financial-literacy'" />
-  <CostEstimator v-else-if="currentRoute === 'cost-estimator'" />
-  <TaxLearn v-else-if="currentRoute === 'tax-learn'" />
+  <main v-if="currentRoute !== 'home'">
+    <MortgageCalculator v-if="currentRoute === 'mortgage-calculator'" />
+    <BudgetPlanner v-else-if="currentRoute === 'budget-planner'" />
+    <SavingsGoalCalculator v-else-if="currentRoute === 'savings-goal-calculator'" />
+    <FinancialLiteracy v-else-if="currentRoute === 'financial-literacy'" />
+    <CostEstimator v-else-if="currentRoute === 'cost-estimator'" />
+    <TaxLearn v-else-if="currentRoute === 'tax-learn'" />
+  </main>
 
-  <!-- Footer only on Home (as before) -->
-  <Footer v-if="currentRoute === 'home'" />
+  <!-- Footer on all pages -->
+  <Footer />
 </template>

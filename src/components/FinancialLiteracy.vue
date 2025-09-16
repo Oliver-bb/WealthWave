@@ -2,13 +2,21 @@
   <div class="financial-literacy">
     <!-- Main Content -->
     <div class="main-content">
+      <!-- Batch Controls -->
+      <div class="batch-controls">
+        <p class="batch-info">Showing {{ currentBatch * batchSize + 1 }}-{{ Math.min((currentBatch + 1) * batchSize, allVideos.length) }} of {{ allVideos.length }} videos</p>
+        <button class="refresh-btn" @click="loadNextBatch">
+          {{ hasMoreBatches ? 'Load More Videos' : 'Back to Start' }}
+        </button>
+      </div>
+      
       <!-- Learning Modules Grid -->
       <div class="modules-grid">
         <div v-for="module in modules" :key="module.id" class="module-card">
           <div class="module-image">
-            <div class="video-thumbnail" :style="{ backgroundImage: `url(https://img.youtube.com/vi/${module.videoId}/maxresdefault.jpg)` }" @click="startLearning(module)">
+            <div class="video-thumbnail" :style="{ backgroundImage: module.videoId ? `url(https://img.youtube.com/vi/${module.videoId}/maxresdefault.jpg)` : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }" @click="startLearning(module)">
               <div class="play-overlay">
-                <div class="play-button" @click.stop="startLearning(module)">▶</div>
+                <div class="play-button" @click.stop="startLearning(module)">{{ module.videoId ? '▶' : '🔗' }}</div>
               </div>
             </div>
           </div>
@@ -32,7 +40,7 @@
               <span class="duration">⏱ {{ module.duration }}</span>
               <span class="difficulty" :class="module.difficulty.toLowerCase()">{{ module.difficulty }}</span>
             </div>
-            <button class="start-learning-btn" @click="startLearning(module)">Start Learning</button>
+            <button class="start-learning-btn" @click="startLearning(module)">{{ module.videoId ? 'Start Learning' : 'Visit Website' }}</button>
           </div>
         </div>
       </div>
@@ -77,7 +85,7 @@ export default {
       searchQuery: '',
       selectedModule: null,
       showVideoPlayer: false,
-      modules: [
+      allVideos: [
         {
           id: 1,
           title: 'Understanding Inflation',
@@ -127,12 +135,309 @@ export default {
           rating: 5.0,
           videoId: '3BOE1A8HXeE',
           videoUrl: 'https://youtu.be/3BOE1A8HXeE?si=z2N3aLLyfmHyUvw9'
+        },
+        // 来自txt文件的29个新链接
+        {
+          id: 6,
+          title: 'Financial Literacy Basics',
+          description: 'Essential financial concepts everyone should know.',
+          duration: '15 mins',
+          difficulty: 'Easy',
+          rating: 4.5,
+          videoId: '4c34HzPnt0s',
+          videoUrl: 'https://www.youtube.com/watch?v=4c34HzPnt0s'
+        },
+        {
+          id: 7,
+          title: 'Understanding Taxes',
+          description: 'Learn the basics of how taxes work in your financial planning.',
+          duration: '12 mins',
+          difficulty: 'Medium',
+          rating: 4.6,
+          videoId: 'EUAzzyfW7Dw',
+          videoUrl: 'https://www.youtube.com/watch?v=EUAzzyfW7Dw'
+        },
+        {
+          id: 8,
+          title: 'Employee vs Independent Contractor',
+          description: 'Understanding the difference and what it means for your taxes.',
+          duration: '10 mins',
+          difficulty: 'Medium',
+          rating: 4.3,
+          videoId: null,
+          videoUrl: 'https://www.ato.gov.au/businesses-and-organisations/hiring-and-paying-your-workers/employee-or-independent-contractor'
+        },
+        {
+          id: 9,
+          title: 'PAYG Withholding',
+          description: 'How Pay As You Go withholding works for employees.',
+          duration: '8 mins',
+          difficulty: 'Medium',
+          rating: 4.2,
+          videoId: null,
+          videoUrl: 'https://www.ato.gov.au/businesses-and-organisations/hiring-and-paying-your-workers/payg-withholding'
+        },
+        {
+          id: 10,
+          title: 'Pay and Wages Guide',
+          description: 'Understanding your rights and obligations around pay.',
+          duration: '12 mins',
+          difficulty: 'Easy',
+          rating: 4.4,
+          videoId: null,
+          videoUrl: 'https://www.fairwork.gov.au/pay-and-wages'
+        },
+        {
+          id: 11,
+          title: 'Australian Tax Rates',
+          description: 'Current tax rates and thresholds for Australian residents.',
+          duration: '10 mins',
+          difficulty: 'Medium',
+          rating: 4.1,
+          videoId: null,
+          videoUrl: 'https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents'
+        },
+        {
+          id: 12,
+          title: 'Australian Tax System Overview',
+          description: 'Comprehensive overview of how tax rates work in Australia.',
+          duration: '15 mins',
+          difficulty: 'Medium',
+          rating: 4.2,
+          videoId: null,
+          videoUrl: 'https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents'
+        },
+        {
+          id: 13,
+          title: 'Understanding Pay Slips',
+          description: 'How to read and understand your pay slip.',
+          duration: '8 mins',
+          difficulty: 'Easy',
+          rating: 4.3,
+          videoId: null,
+          videoUrl: 'https://www.fairwork.gov.au/pay-and-wages/paying-wages/pay-slips'
+        },
+        {
+          id: 14,
+          title: 'Minimum Wages in Australia',
+          description: 'Understanding minimum wage rates and your rights.',
+          duration: '10 mins',
+          difficulty: 'Easy',
+          rating: 4.4,
+          videoId: null,
+          videoUrl: 'https://www.fairwork.gov.au/pay-and-wages/minimum-wages'
+        },
+        {
+          id: 15,
+          title: 'Penalty Rates Explained',
+          description: 'When and how penalty rates apply to your work.',
+          duration: '12 mins',
+          difficulty: 'Medium',
+          rating: 4.0,
+          videoId: null,
+          videoUrl: 'https://www.fairwork.gov.au/pay-and-wages/penalty-rates-allowances-and-other-payments/penalty-rates'
+        },
+        {
+          id: 16,
+          title: 'Superannuation Basics',
+          description: 'Understanding how superannuation works in Australia.',
+          duration: '15 mins',
+          difficulty: 'Medium',
+          rating: 4.5,
+          videoId: null,
+          videoUrl: 'https://www.ato.gov.au/individuals-and-families/super-for-individuals-and-families/super'
+        },
+        {
+          id: 17,
+          title: 'Super Guarantee Rates',
+          description: 'Current superannuation guarantee rates and thresholds.',
+          duration: '8 mins',
+          difficulty: 'Medium',
+          rating: 4.1,
+          videoId: null,
+          videoUrl: 'https://www.ato.gov.au/tax-rates-and-codes/key-superannuation-rates-and-thresholds?page=1#Superguaranteepercentage'
+        },
+        {
+          id: 18,
+          title: 'BSB Codes Guide',
+          description: 'Complete guide to Australian BSB codes and banking.',
+          duration: '10 mins',
+          difficulty: 'Easy',
+          rating: 4.0,
+          videoId: null,
+          videoUrl: 'https://bsbnumber.com.au/bsb-blog/bsb-codes-australia-complete-guide-2025/?utm_source=chatgpt.com'
+        },
+        {
+          id: 19,
+          title: 'Credit and Debt Management',
+          description: 'Learn how to manage credit cards and debt effectively.',
+          duration: '18 mins',
+          difficulty: 'Medium',
+          rating: 4.7,
+          videoId: 'SDyVbyhfg2A',
+          videoUrl: 'https://www.youtube.com/watch?v=SDyVbyhfg2A'
+        },
+        {
+          id: 20,
+          title: 'Personal Finance Fundamentals',
+          description: 'Core concepts of personal financial management.',
+          duration: '20 mins',
+          difficulty: 'Easy',
+          rating: 4.8,
+          videoId: 'sm0FzHMInig',
+          videoUrl: 'https://www.youtube.com/watch?v=sm0FzHMInig'
+        },
+        {
+          id: 21,
+          title: 'Investment Strategies',
+          description: 'Different approaches to building an investment portfolio.',
+          duration: '25 mins',
+          difficulty: 'Advanced',
+          rating: 4.6,
+          videoId: 'gSLP99yM5n0',
+          videoUrl: 'https://www.youtube.com/watch?v=gSLP99yM5n0'
+        },
+        {
+          id: 22,
+          title: 'Retirement Planning',
+          description: 'How to plan and save for retirement effectively.',
+          duration: '22 mins',
+          difficulty: 'Medium',
+          rating: 4.5,
+          videoId: 'sVKQn2I4HDM',
+          videoUrl: 'https://www.youtube.com/watch?v=sVKQn2I4HDM'
+        },
+        {
+          id: 23,
+          title: 'Insurance Fundamentals',
+          description: 'Understanding different types of insurance and their importance.',
+          duration: '16 mins',
+          difficulty: 'Easy',
+          rating: 4.4,
+          videoId: 'EqQn1UcBhA0',
+          videoUrl: 'https://www.youtube.com/watch?v=EqQn1UcBhA0'
+        },
+        {
+          id: 24,
+          title: 'Building Wealth',
+          description: 'Strategies for long-term wealth building and financial independence.',
+          duration: '30 mins',
+          difficulty: 'Advanced',
+          rating: 4.9,
+          videoId: 'mcu4Ues3NxM',
+          videoUrl: 'https://www.youtube.com/watch?v=mcu4Ues3NxM'
+        },
+        {
+          id: 25,
+          title: 'Money Management Tips',
+          description: 'Practical tips for better money management in daily life.',
+          duration: '14 mins',
+          difficulty: 'Easy',
+          rating: 4.6,
+          videoId: 'YRr_zcaxBaY',
+          videoUrl: 'https://www.youtube.com/watch?v=YRr_zcaxBaY&t=10s'
+        },
+        {
+          id: 26,
+          title: 'Debt-to-Income Ratio',
+          description: 'Understanding and calculating your debt-to-income ratio.',
+          duration: '8 mins',
+          difficulty: 'Medium',
+          rating: 4.2,
+          videoId: null,
+          videoUrl: 'https://www.investopedia.com/terms/d/dti.asp'
+        },
+        {
+          id: 27,
+          title: 'HECS-HELP Explained',
+          description: 'Understanding Higher Education Contribution Scheme.',
+          duration: '12 mins',
+          difficulty: 'Medium',
+          rating: 4.3,
+          videoId: null,
+          videoUrl: 'https://www.studyassist.gov.au/financial-and-study-support/hecs-help'
+        },
+        {
+          id: 28,
+          title: 'Commonwealth Supported Places',
+          description: 'How Commonwealth Supported Places work for university students.',
+          duration: '10 mins',
+          difficulty: 'Medium',
+          rating: 4.1,
+          videoId: null,
+          videoUrl: 'https://www.studyassist.gov.au/financial-and-study-support/commonwealth-supported-places-csps'
+        },
+        {
+          id: 29,
+          title: 'Student Loan Indexation',
+          description: 'How indexation affects your student loan repayments.',
+          duration: '8 mins',
+          difficulty: 'Medium',
+          rating: 4.0,
+          videoId: null,
+          videoUrl: 'https://www.studyassist.gov.au/managing-and-repaying-your-loan/loan-increases-and-indexation'
+        },
+        {
+          id: 30,
+          title: 'Rental Bonds Guide',
+          description: 'Everything you need to know about rental bonds.',
+          duration: '10 mins',
+          difficulty: 'Easy',
+          rating: 4.3,
+          videoId: null,
+          videoUrl: 'https://www.realestate.com.au/advice/rental-bond-and-how-does-it-work/?utm_source=chatgpt.com'
+        },
+        {
+          id: 31,
+          title: 'Rent Guarantor Explained',
+          description: 'Understanding what a rent guarantor is and when you need one.',
+          duration: '8 mins',
+          difficulty: 'Easy',
+          rating: 4.2,
+          videoId: null,
+          videoUrl: 'https://soho.com.au/articles/rent-guarantor?utm_source=chatgpt.com'
+        },
+        {
+          id: 32,
+          title: 'Consumer Rights - Refunds',
+          description: 'Your rights when it comes to returns, refunds and cancellations.',
+          duration: '12 mins',
+          difficulty: 'Easy',
+          rating: 4.4,
+          videoId: null,
+          videoUrl: 'https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel'
+        },
+        {
+          id: 33,
+          title: 'Smart Shopping Guide',
+          description: 'Tips for making smart purchasing decisions and avoiding scams.',
+          duration: '15 mins',
+          difficulty: 'Easy',
+          rating: 4.5,
+          videoId: null,
+          videoUrl: 'https://www.accc.gov.au/consumers/buying-products-and-services'
+        },
+        {
+          id: 34,
+          title: 'Phishing Scams Protection',
+          description: 'How to identify and protect yourself from phishing scams.',
+          duration: '10 mins',
+          difficulty: 'Easy',
+          rating: 4.6,
+          videoId: null,
+          videoUrl: 'https://www.scamwatch.gov.au/types-of-scams/phishing'
         }
-      ]
+      ],
+      currentBatch: 0,
+      batchSize: 3
     }
   },
   methods: {
     startLearning(module) {
+      if (!module.videoId) { // 如果没有videoId，说明是网页链接
+        window.open(module.videoUrl, '_blank')
+        return
+      }
       this.selectedModule = module
       this.showVideoPlayer = true
     },
@@ -144,6 +449,50 @@ export default {
       const fullStars = Math.floor(rating)
       const hasHalfStar = rating % 1 !== 0
       return { fullStars, hasHalfStar }
+    },
+    loadNextBatch() {
+      if (this.hasMoreBatches) {
+        this.currentBatch++
+      } else {
+        this.currentBatch = 0 // 回到第一批
+      }
+    }
+  },
+  computed: {
+    modules() {
+      const start = this.currentBatch * this.batchSize
+      const end = start + this.batchSize
+      return this.allVideos.slice(start, end)
+    },
+    hasMoreBatches() {
+      return (this.currentBatch + 1) * this.batchSize < this.allVideos.length
+    }
+  },
+  mounted() {
+    // 自动从 sessionStorage 拉取待播放链接
+    let pending = null
+    try { pending = sessionStorage.getItem('pendingVideoLink') } catch (e) {}
+    if (pending) {
+      // 简单从 URL 中提取 YouTube videoId
+      const yt = pending.match(/(?:v=|youtu\.be\/)([\w-]{6,})/)
+      if (yt && yt[1]) {
+        const videoId = yt[1]
+        this.selectedModule = {
+          id: -1,
+          title: 'Video Guide',
+          description: 'Auto-launched from Financial Concepts',
+          duration: '',
+          difficulty: 'Easy',
+          rating: 5.0,
+          videoId,
+          videoUrl: pending
+        }
+        this.showVideoPlayer = true
+      } else {
+        // 非 YouTube 链接：新窗口打开
+        window.open(pending, '_blank')
+      }
+      try { sessionStorage.removeItem('pendingVideoLink') } catch (e) {}
     }
   }
 }
@@ -278,14 +627,51 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 24px 20px 24px;  /* reduced bottom padding to minimize gap */
+  padding: 40px 24px;
+}
+
+.batch-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.batch-info {
+  margin: 0;
+  color: #e6eaf2;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.refresh-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refresh-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
 }
 
 .modules-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 24px;
+  margin-bottom: 48px;
+  max-width: 100%;
 }
 
 .module-card {
@@ -294,6 +680,11 @@ export default {
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  max-width: 450px;
+  width: 100%;
 }
 
 .module-card:hover {
@@ -366,6 +757,9 @@ export default {
 
 .module-content {
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 
 .module-title {
@@ -388,12 +782,12 @@ export default {
 }
 
 .star {
-  color: #9ca3af !important;
+  color: #d1d5db;
   font-size: 14px;
 }
 
 .star.filled {
-  color: #fbbf24 !important;
+  color: #fbbf24;
 }
 
 .rating-value {
@@ -445,19 +839,20 @@ export default {
 
 .start-learning-btn {
   width: 100%;
-  background: #4F46E5 !important;
-  color: #fff !important;
-  border: 0 !important;
-  padding: .9rem !important;
-  border-radius: 10px !important;
-  font-weight: 700 !important;
-  cursor: pointer;
+  height: 40px;
+  background: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 6px;
   font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
   transition: background-color 0.2s;
+  margin-top: auto;
 }
 
 .start-learning-btn:hover {
-  background: #4338CA !important;
+  background: #4338ca;
 }
 
 /* Progress Section */
@@ -631,93 +1026,6 @@ export default {
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
-}
-
-/* Dark mode styles */
-@media (prefers-color-scheme: dark) {
-  .financial-literacy {
-    background: transparent;
-  }
-  
-  .module-card {
-    background: #1f2937;
-    color: #e5e7eb;
-  }
-  
-  .module-title {
-    color: #e5e7eb;
-  }
-  
-  .module-description {
-    color: #d1d5db;
-  }
-  
-  /* Star rating styles for dark mode */
-  .star {
-    color: #4b5563 !important;
-  }
-  
-  .star.filled {
-    color: #fbbf24 !important;
-  }
-  
-  .rating-value {
-    color: #d1d5db !important;
-  }
-  
-  /* Difficulty badge colors for dark mode */
-  .difficulty.easy {
-    background: #16a34a !important;
-    color: white !important;
-  }
-  
-  .difficulty.medium {
-    background: #d97706 !important;
-    color: white !important;
-  }
-  
-  .difficulty.advanced {
-    background: #dc2626 !important;
-    color: white !important;
-  }
-  
-  .video-modal-content {
-    background: #1f2937;
-    color: #e5e7eb;
-  }
-  
-  .video-title {
-    color: #e5e7eb;
-  }
-  
-  .video-description {
-    color: #d1d5db;
-  }
-  
-  /* Ensure video thumbnail hover works properly in dark mode */
-  .play-overlay {
-    background: rgba(0, 0, 0, 0.5) !important;
-  }
-  
-  .play-button {
-    background: rgba(31, 41, 55, 0.9) !important;
-    color: #ffffff !important;
-  }
-  
-  .video-difficulty.easy {
-    background: #16a34a !important;
-    color: white !important;
-  }
-  
-  .video-difficulty.medium {
-    background: #d97706 !important;
-    color: white !important;
-  }
-  
-  .video-difficulty.advanced {
-    background: #dc2626 !important;
-    color: white !important;
-  }
 }
 
 @media (max-width: 768px) {

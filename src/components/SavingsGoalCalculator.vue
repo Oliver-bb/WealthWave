@@ -7,12 +7,10 @@
         <div class="form-group">
           <label>Savings Goal</label>
           <input
-            type="number"
+            type="text"
             v-model="savingsGoal"
-            placeholder="e.g., 50000 (savings goal)"
+            placeholder="Enter your target amount"
             class="form-input"
-            min="1"
-            max="9999999"
           />
         </div>
 
@@ -20,12 +18,10 @@
           <div class="form-group timeline-group">
             <label>Timeline</label>
             <input
-              type="number"
+              type="text"
               v-model="timeline"
-              placeholder="e.g., 24 (duration)"
+              placeholder="Duration"
               class="form-input timeline-input"
-              min="1"
-              max="600"
             />
           </div>
           <div class="form-group unit-group">
@@ -40,25 +36,20 @@
         <div class="form-group">
           <label>Initial Deposit (Optional)</label>
           <input
-            type="number"
+            type="text"
             v-model="initialDeposit"
-            placeholder="e.g., 5000 (current savings)"
+            placeholder="Amount you already have saved"
             class="form-input"
-            min="0"
-            max="9999999"
           />
         </div>
 
         <div class="form-group">
           <label>Interest Rate (Annual %)</label>
           <input
-            type="number"
+            type="text"
             v-model="interestRate"
-            placeholder="e.g., 3.5 (interest rate %)"
+            placeholder="Expected annual interest rate"
             class="form-input"
-            min="0"
-            max="50"
-            step="0.1"
           />
         </div>
 
@@ -80,28 +71,44 @@
 
       <!-- Right Side - Results -->
       <div class="results-section">
+        <!-- Compact Savings Plan -->
         <div class="savings-plan">
           <h3>Your Savings Plan</h3>
-          <div class="monthly-amount">
-            <span class="amount">${{ monthlyAmount }}</span>
-            <span class="label">Required savings per month</span>
-          </div>
-          <div class="breakdown">
-            <div class="breakdown-item blue">
-              <span class="value">${{ weeklyAmount }}</span>
-              <span class="label">Per Week</span>
+          <div class="plan-grid">
+            <div class="plan-item main">
+              <span class="amount">${{ currentDisplayAmount }}</span>
+              <span class="label">{{ currentDisplayLabel }}</span>
             </div>
-            <div class="breakdown-item purple">
-              <span class="value">${{ monthlyAmount }}</span>
-              <span class="label">Per Month</span>
+            <div class="plan-item secondary">
+              <span class="value">${{ secondaryDisplayAmount }}</span>
+              <span class="label">{{ secondaryDisplayLabel }}</span>
             </div>
           </div>
         </div>
 
+        <!-- Split Progress Visualization -->
         <div class="progress-visualization">
-          <h4>Progress Visualization</h4>
-          <div class="chart-container">
-            <canvas ref="chartCanvas" width="400" height="200"></canvas>
+          <!-- Principal vs Interest Chart -->
+          <div class="chart-section">
+            <h4>Principal vs Interest</h4>
+            <div class="chart-container">
+              <div ref="chartCanvas" class="echart"></div>
+            </div>
+          </div>
+          
+          <!-- Goal Progress Circle -->
+          <div class="progress-section">
+            <h4>Goal Progress</h4>
+            <div class="progress-circle-container">
+              <div class="progress-circle">
+                <svg viewBox="0 0 100 100" class="circular-chart">
+                  <path class="circle-bg" d="M 50,50 m 0,-40 a 40,40 0 1 1 0,80 a 40,40 0 1 1 0,-80"></path>
+                  <path class="circle" :stroke-dasharray="progressDashArray" d="M 50,50 m 0,-40 a 40,40 0 1 1 0,80 a 40,40 0 1 1 0,-80"></path>
+                </svg>
+                <div class="percentage">{{ progressPercentage }}%</div>
+                <div class="progress-label">Progress</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -116,11 +123,11 @@ export default {
   name: 'SavingsGoalCalculator',
   data() {
     return {
-      savingsGoal: '',
-      timeline: '',
+      savingsGoal: '10,000',
+      timeline: '12',
       timeUnit: 'months',
-      initialDeposit: '',
-      interestRate: '',
+      initialDeposit: '1,000',
+      interestRate: '3.5',
       // keep numeric
       monthlyAmount: 0,
       weeklyAmount: 0,
@@ -147,6 +154,85 @@ export default {
     // NEW: class for message badge
     statusClass() {
       return this.statusType ? `is-${this.statusType}` : ''
+    },
+    
+    // Timeline 互动显示
+    currentDisplayAmount() {
+      if (this.timeUnit === 'weeks') return this.weeklyAmount
+      if (this.timeUnit === 'years') return this.monthlyAmount * 12
+      return this.monthlyAmount
+    },
+    
+    currentDisplayLabel() {
+      if (this.timeUnit === 'weeks') return `Required savings per week`
+      if (this.timeUnit === 'years') return `Required savings per year`
+      return `Required savings per month`
+    },
+    
+    secondaryDisplayAmount() {
+      if (this.timeUnit === 'weeks') return this.monthlyAmount
+      if (this.timeUnit === 'years') return this.monthlyAmount
+      return this.weeklyAmount
+    },
+    
+    secondaryDisplayLabel() {
+      if (this.timeUnit === 'weeks') return `Per Month`
+      if (this.timeUnit === 'years') return `Per Month`
+      return `Per Week`
+    },
+    
+    // Goal Progress 计算
+    progressPercentage() {
+      if (this.savingsGoalNum === 0) return 0
+      const progress = (this.initialDepositNum / this.savingsGoalNum) * 100
+      return Math.min(Math.round(progress), 100)
+    },
+    
+    progressDashArray() {
+      const circumference = 2 * Math.PI * 40; // radius = 40
+      const progress = this.progressPercentage / 100;
+      const strokeDash = circumference * progress;
+      return `${strokeDash} ${circumference}`;
+    },
+    
+    progressDescription() {
+      const initial = this.initialDepositNum.toLocaleString()
+      const goal = this.savingsGoalNum.toLocaleString()
+      const remaining = (this.savingsGoalNum - this.initialDepositNum).toLocaleString()
+      
+      if (this.initialDepositNum >= this.savingsGoalNum) {
+        return `🎉 Goal achieved! You have $${initial} of your $${goal} target.`
+      }
+      
+      return `You have $${initial} saved. Need $${remaining} more to reach your $${goal} goal.`
+    }
+  },
+  watch: {
+    timeUnit(newUnit, oldUnit) {
+      // 当时间单位改变时，自动转换数值
+      const currentValue = parseFloat(this.timeline) || 0;
+      if (currentValue === 0) return;
+      
+      let newValue = currentValue;
+      
+      // 从旧单位转换到月
+      let months = currentValue;
+      if (oldUnit === 'weeks') {
+        months = currentValue / 4.333;
+      } else if (oldUnit === 'years') {
+        months = currentValue * 12;
+      }
+      
+      // 从月转换到新单位
+      if (newUnit === 'weeks') {
+        newValue = Math.round(months * 4.333);
+      } else if (newUnit === 'years') {
+        newValue = Math.round(months / 12 * 10) / 10; // 保留一位小数
+      } else {
+        newValue = Math.round(months);
+      }
+      
+      this.timeline = newValue.toString();
     }
   },
   methods: {
@@ -236,7 +322,7 @@ export default {
       })
     },
 
-    // dynamic, safe chart that follows the plan (interest + contributions)
+    // Principal vs Interest 面积图
     initChart(months, monthly, initial, mRate, goal) {
       if (this.chart) {
         this.chart.dispose()
@@ -246,75 +332,121 @@ export default {
       const el = this.$refs.chartCanvas
       if (!el) return
 
-      const steps = Math.min(Math.max(Math.round(months), 1), 60) // cap for readability
-      const categories = Array.from({ length: steps + 1 }, (_, i) => i)
-      const data = []
+      const steps = Math.min(Math.max(Math.round(months), 1), 60)
+      const categories = Array.from({ length: steps + 1 }, (_, i) => {
+        if (this.timeUnit === 'weeks') return i + ' weeks'
+        if (this.timeUnit === 'years') return (i / 12).toFixed(1) + ' years'
+        return i + ' months'
+      })
+      
+      const principalData = []
+      const interestData = []
 
-      let bal = initial
-      data.push(bal)
+      let totalPrincipal = initial
+      let totalInterest = 0
+      
+      principalData.push(initial)
+      interestData.push(0)
+      
       for (let i = 0; i < steps; i++) {
-        // end-of-period contribution, then interest
-        bal = (bal + monthly) * (1 + mRate)
-        data.push(bal)
+        totalPrincipal += monthly
+        const interestEarned = (totalPrincipal + totalInterest) * mRate
+        totalInterest += interestEarned
+        
+        principalData.push(totalPrincipal)
+        interestData.push(totalInterest)
       }
 
-      const yMaxRaw = Math.max(goal, ...data)
-      const yMax = Math.ceil((yMaxRaw * 1.1) / 1000) * 1000
-      const interval = Math.max(1000, Math.ceil(yMax / 6 / 1000) * 1000)
-
-      // Detect if dark mode is active
-      const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
-      const textColor = isDarkMode ? '#e5e7eb' : '#333'
-      const lineColor = isDarkMode ? '#4b5563' : '#ddd'
-      const splitLineColor = isDarkMode ? '#374151' : '#f0f0f0'
+      const maxValue = Math.max(goal, totalPrincipal + totalInterest)
+      const yMax = Math.ceil((maxValue * 1.1) / 1000) * 1000
 
       const chart = echarts.init(el)
       chart.setOption({
-        grid: { left: '8%', right: '8%', bottom: '15%', top: '8%' },
+        grid: { left: '10%', right: '10%', bottom: '15%', top: '15%' },
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'cross' },
+          formatter: function(params) {
+            const period = params[0].axisValue
+            let html = `<strong>${period}</strong><br/>`
+            params.forEach(param => {
+              html += `${param.marker} ${param.seriesName}: $${param.value.toLocaleString()}<br/>`
+            })
+            const total = params.reduce((sum, param) => sum + param.value, 0)
+            html += `<strong>Total: $${total.toLocaleString()}</strong>`
+            return html
+          }
+        },
+        legend: {
+          data: ['Principal', 'Interest'],
+          top: '5%',
+          textStyle: { color: '#666' }
+        },
         xAxis: {
           type: 'category',
           data: categories,
-          name: 'Months',
+          name: this.timeUnit.charAt(0).toUpperCase() + this.timeUnit.slice(1),
           nameLocation: 'middle',
-          nameGap: 20,
-          nameTextStyle: { color: textColor, fontSize: 12 },
-          axisLine: { show: true, lineStyle: { color: lineColor } },
-          axisTick: { show: true, lineStyle: { color: lineColor } },
-          axisLabel: { color: textColor, fontSize: 11 }
+          nameGap: 25,
+          nameTextStyle: { color: '#666', fontSize: 12 },
+          axisLine: { show: true, lineStyle: { color: '#ddd' } },
+          axisTick: { show: true, lineStyle: { color: '#ddd' } },
+          axisLabel: { color: '#666', fontSize: 10, rotate: 45 }
         },
         yAxis: {
           type: 'value',
           name: 'Amount ($)',
           nameLocation: 'middle',
-          nameGap: 35,
-          nameTextStyle: { color: textColor, fontSize: 12 },
+          nameGap: 40,
           min: 0,
           max: yMax,
-          interval,
-          axisLine: { show: true, lineStyle: { color: lineColor } },
-          axisTick: { show: true, lineStyle: { color: lineColor } },
-          axisLabel: { color: textColor, fontSize: 11, formatter: '{value}' },
-          splitLine: { show: true, lineStyle: { color: splitLineColor, type: 'solid' } }
+          axisLine: { show: true, lineStyle: { color: '#ddd' } },
+          axisTick: { show: true, lineStyle: { color: '#ddd' } },
+          axisLabel: { 
+            color: '#666', 
+            fontSize: 10, 
+            formatter: (value) => '$' + (value / 1000).toFixed(0) + 'K'
+          },
+          splitLine: { show: true, lineStyle: { color: '#f0f0f0' } }
         },
-        series: [{
-          data,
-          type: 'line',
-          smooth: true,
-          lineStyle: { color: '#28a745', width: 2 },
-          itemStyle: { color: '#28a745', borderWidth: 0 },
-          symbol: 'circle',
-          symbolSize: 3,
-          showSymbol: true,
-          areaStyle: {
-            color: {
-              type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
-              colorStops: [
-                { offset: 0, color: 'rgba(40, 167, 69, 0.15)' },
-                { offset: 1, color: 'rgba(40, 167, 69, 0.02)' }
-              ]
+        series: [
+          {
+            name: 'Principal',
+            type: 'line',
+            stack: 'total',
+            data: principalData,
+            smooth: true,
+            lineStyle: { width: 0 },
+            showSymbol: false,
+            areaStyle: {
+              color: {
+                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [
+                  { offset: 0, color: 'rgba(76, 175, 80, 0.8)' },
+                  { offset: 1, color: 'rgba(76, 175, 80, 0.3)' }
+                ]
+              }
+            }
+          },
+          {
+            name: 'Interest',
+            type: 'line',
+            stack: 'total',
+            data: interestData,
+            smooth: true,
+            lineStyle: { width: 0 },
+            showSymbol: false,
+            areaStyle: {
+              color: {
+                type: 'linear', x: 0, y: 0, x2: 0, y2: 1,
+                colorStops: [
+                  { offset: 0, color: 'rgba(33, 150, 243, 0.8)' },
+                  { offset: 1, color: 'rgba(33, 150, 243, 0.3)' }
+                ]
+              }
             }
           }
-        }]
+        ]
       })
 
       this.chart = chart
@@ -337,9 +469,9 @@ export default {
 <style scoped>
   .savings-goal-calculator {
     min-height: 100vh;
-    background: transparent;  /* Let dark theme show through */
+    background: #f8f9fa;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    padding: 0 20px 0px 20px;  /* Removed bottom padding to eliminate gap with footer */
+    padding: 40px 20px;
   }
 
   .header {
@@ -402,14 +534,6 @@ export default {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
-  }
-
-  /* Dark mode placeholder visibility */
-  @media (prefers-color-scheme: dark) {
-    .form-input::placeholder {
-      color: #9CA3AF !important;
-      opacity: 1;
-    }
   }
 
   .form-row {
@@ -489,10 +613,11 @@ export default {
   }
 
   .savings-plan {
-    background: #e8f5e8;
-    padding: 24px;
+    background: #fff;
+    padding: 16px;
     border-radius: 12px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
   }
 
   .savings-plan h3 {
@@ -533,13 +658,11 @@ export default {
   }
 
   .breakdown-item.blue {
-    background: #3b82f6 !important;
-    border: 1px solid #3b82f6 !important;
+    background: rgba(0, 123, 255, 0.1);
   }
 
   .breakdown-item.purple {
-    background: #8b5cf6 !important;
-    border: 1px solid #8b5cf6 !important;
+    background: rgba(108, 117, 125, 0.1);
   }
 
   .breakdown-item .value {
@@ -550,70 +673,52 @@ export default {
   }
 
   .breakdown-item.blue .value {
-    color: white !important;
+    color: #007bff;
   }
 
   .breakdown-item.purple .value {
-    color: white !important;
+    color: #6c757d;
   }
 
   .breakdown-item .label {
     font-size: 12px;
-    color: white !important;
+    color: #666;
   }
 
   .progress-visualization {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 200px;
+    align-items: start;
+    gap: 16px;
     background: white;
-    padding: 24px;
+    padding: 16px;
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    text-align: center;
   }
 
-  .progress-visualization h4 {
+  .chart-section h4 {
     font-size: 16px;
     font-weight: 600;
-    color: #333 !important;
-    margin: 0 0 16px 0;
+    color: #333;
+    margin: 0 0 12px 0;
+  }
+  
+  .progress-section h4 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
   }
 
   .chart-container {
     width: 100%;
-    height: 200px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    height: 250px;
+    overflow: hidden;
   }
 
-  /* Dark mode styles for progress visualization */
-  @media (prefers-color-scheme: dark) {
-    .progress-visualization {
-      background: #1f2937 !important;
-      color: #e5e7eb;
-    }
-    
-    .progress-visualization h4 {
-      color: #e5e7eb !important;
-    }
-    
-    .savings-plan {
-      background: #1f2937 !important;
-      color: #e5e7eb;
-      border-radius: 12px !important;
-    }
-    
-    .savings-plan h3 {
-      color: #e5e7eb !important;
-    }
-    
-    .monthly-amount .label {
-      color: #d1d5db !important;
-    }
-    
-    .form-section {
-      background: #1f2937 !important;
-      color: #e5e7eb;
-    }
+  .echart {
+    width: 100%;
+    height: 100%;
   }
 
   .goal-breakdown {
@@ -686,47 +791,168 @@ export default {
 
 /* Variants */
 .is-info {
-  background: #eef2ff !important;
-  border-color: #c7d2fe !important;
-  color: #3730a3 !important;
+  background: #eef2ff;
+  border-color: #c7d2fe;
+  color: #3730a3;
 }
 .is-success {
-  background: #ecfdf5 !important;
-  border-color: #a7f3d0 !important;
-  color: #065f46 !important;
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
 }
 .is-warn {
-  background: #fffbeb !important;
-  border-color: #fde68a !important;
-  color: #92400e !important;
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #92400e;
 }
 .is-error {
-  background: #fef2f2 !important;
-  border-color: #fecaca !important;
-  color: #991b1b !important;
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #991b1b;
 }
 
-/* Dark mode variants */
-@media (prefers-color-scheme: dark) {
-  .is-info {
-    background: #1e3a8a !important;
-    border-color: #3b82f6 !important;
-    color: #dbeafe !important;
+.progress-section {
+  width: 200px;
+  max-width: 200px;
+  overflow: hidden;
+  padding: 0;
+}
+
+.progress-circle-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: center;
+  padding-left: 10px;
+}
+
+.progress-circle {
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.circular-chart {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 8;
+}
+
+.circle {
+  fill: none;
+  stroke: #10b981;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dasharray 0.6s ease-in-out;
+}
+
+.percentage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 26px;
+  font-weight: 700;
+  color: #10b981;
+}
+
+.progress-label {
+  position: absolute;
+  top: 65%;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.progress-details {
+  width: 100%;
+  max-width: 180px;
+  line-height: 1.3;
+  padding: 0 8px;
+  box-sizing: border-box;
+}
+
+.progress-details p {
+  margin: 0;
+  font-size: 11px;
+  color: #6b7280;
+  word-wrap: break-word;
+}
+
+.plan-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.plan-item {
+  text-align: center;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.plan-item.main {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  border: 2px solid #059669;
+}
+
+.plan-item.secondary {
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  border: 2px solid #3b82f6;
+}
+
+.plan-item .amount {
+  display: block;
+  font-size: 20px;
+  font-weight: 700;
+  color: #059669;
+  margin-bottom: 4px;
+}
+
+.plan-item .value {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #3b82f6;
+  margin-bottom: 4px;
+}
+
+.plan-item .label {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+@media (max-width: 1024px) {
+  .progress-visualization {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
-  .is-success {
-    background: #065f46 !important;
-    border-color: #10b981 !important;
-    color: #d1fae5 !important;
+  
+  .progress-section {
+    width: 100%;
+    max-width: 100%;
+    overflow: visible;
   }
-  .is-warn {
-    background: #92400e !important;
-    border-color: #f59e0b !important;
-    color: #fef3c7 !important;
+  
+  .chart-container {
+    height: 200px;
   }
-  .is-error {
-    background: #991b1b !important;
-    border-color: #ef4444 !important;
-    color: #fecaca !important;
+  
+  .progress-details {
+    max-width: 100%;
+    padding: 0 20px;
   }
 }
 

@@ -11,34 +11,27 @@
           </div>
           <p class="card-subtitle">Click the button to see your take-home pay</p>
 
-          <div class="form-group">
-            <label class="form-label">Annual Gross Salary</label>
-            <div class="input-container">
-              <span class="currency-symbol">$</span>
-              <input 
-                type="number" 
-                class="form-input" 
-                v-model="grossSalary"
-                min="0"
-                max="999999"
-                step="1000"
-                placeholder="e.g., 80000 (Enter your annual salary)"
-                @input="validateSalaryInput"
-              >
-            </div>
+        <div class="form-group">
+          <label class="form-label">Monthly Gross Salary</label>
+          <div class="input-container">
+            <span class="currency-symbol">$</span>
+            <input type="text" class="form-input" v-model="grossSalary">
           </div>
+        </div>
 
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Pay Frequency</label>
               <select class="form-select" v-model="payFrequency">
-                <option value="Annual">Annual</option>
                 <option value="Monthly">Monthly</option>
               </select>
             </div>
             <div class="form-group">
               <label class="form-label">State</label>
-              <div class="static-value">Victoria</div>
+              <select class="form-select" v-model="state">
+                <option value="NSW">NSW</option>
+                <option value="VIC">VIC</option>
+              </select>
             </div>
           </div>
 
@@ -48,7 +41,7 @@
             <h3 class="breakdown-title">Your Breakdown</h3>
             <div class="salary-display">
               <div class="salary-label">Gross Salary</div>
-              <div class="salary-amount">${{ formatNumber(calculatedResults.grossSalary || 0) }}</div>
+              <div class="salary-amount">${{ formatNumber(parseFloat(grossSalary.replace(/,/g, '')) || 0) }}</div>
               <div class="progress-bar">
                 <div class="progress-fill"></div>
               </div>
@@ -116,8 +109,11 @@
               <p class="concept-text">
                 {{ getCurrentTerm().definition }}
               </p>
-              <div class="category-badge" :class="getCategoryColor(getCurrentTerm().category)">
-                {{ getCurrentTerm().category }}
+              <div class="badge-and-button">
+                <div class="category-badge" :class="getCategoryColor(getCurrentTerm().category)">
+                  {{ getCurrentTerm().category }}
+                </div>
+                <button class="watch-btn" v-if="currentVideoLink" @click="watchCurrentVideo">Watch Video</button>
               </div>
             </div>
 
@@ -125,7 +121,7 @@
             <div class="navigation-hints">
         <button
           type="button"
-          class="calculate-btn"
+          class="hint-link"
           @click="prevCard"
           :disabled="atStart"
           aria-label="Previous term"
@@ -136,7 +132,7 @@
 
         <button
           type="button"
-          class="calculate-btn"
+          class="hint-link"
           @click="nextCard"
           :disabled="atEnd"
           aria-label="Next term"
@@ -156,14 +152,14 @@
                 <div class="fact-icon">⚡</div>
                 <div class="fact-content">
                   <div class="fact-label">Current Rate</div>
-                  <div class="fact-value">11.5%</div>
+                  <div class="fact-value">11%</div>
                   <div class="fact-desc">Minimum employer contribution</div>
                 </div>
               </div>
               <div class="fact-item">
                 <div class="fact-icon">🎯</div>
                 <div class="fact-content">
-                  <div class="fact-label">Retirement Age</div>
+                  <div class="fact-label">Retire Age</div>
                   <div class="fact-value">60</div>
                   <div class="fact-desc">When you can access super</div>
                 </div>
@@ -222,17 +218,50 @@ export default {
   name: 'TaxLearn',
   data() {
     return {
-      grossSalary: '',
-      payFrequency: 'Annual',
+      grossSalary: '6,250',
+      payFrequency: 'Monthly',
       state: 'NSW',
       calculatedResults: {
-        grossSalary: 0,
         incomeTax: 0,
         medicareLevy: 0,
         netPay: 0,
         superannuation: 0
       },
       currentCardIndex: 0,
+      // 需要带视频按钮的卡片索引（1-based）
+      videoTargetIndices: [1,2,3,4,5,7,8,10,11,12,14,15,20,22,25,26,29,34,36,43,51,52,53,54,56,60,62,63,64],
+      // 对应的链接（来自新建文本文档.txt，按顺序）
+      videoLinks: [
+        'https://www.youtube.com/watch?v=4c34HzPnt0s',
+        'https://www.youtube.com/watch?v=EUAzzyfW7Dw',
+        'https://www.ato.gov.au/businesses-and-organisations/hiring-and-paying-your-workers/employee-or-independent-contractor',
+        'https://www.ato.gov.au/businesses-and-organisations/hiring-and-paying-your-workers/payg-withholding',
+        'https://www.fairwork.gov.au/pay-and-wages',
+        'https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents',
+        'https://www.ato.gov.au/tax-rates-and-codes/tax-rates-australian-residents',
+        'https://www.fairwork.gov.au/pay-and-wages/paying-wages/pay-slips',
+        'https://www.fairwork.gov.au/pay-and-wages/minimum-wages',
+        'https://www.fairwork.gov.au/pay-and-wages/penalty-rates-allowances-and-other-payments/penalty-rates',
+        'https://www.ato.gov.au/individuals-and-families/super-for-individuals-and-families/super',
+        'https://www.ato.gov.au/tax-rates-and-codes/key-superannuation-rates-and-thresholds?page=1#Superguaranteepercentage',
+        'https://bsbnumber.com.au/bsb-blog/bsb-codes-australia-complete-guide-2025/?utm_source=chatgpt.com',
+        'https://www.youtube.com/watch?v=SDyVbyhfg2A',
+        'https://www.youtube.com/watch?v=sm0FzHMInig',
+        'https://www.youtube.com/watch?v=gSLP99yM5n0',
+        'https://www.youtube.com/watch?v=sVKQn2I4HDM',
+        'https://www.youtube.com/watch?v=EqQn1UcBhA0',
+        'https://www.youtube.com/watch?v=mcu4Ues3NxM',
+        'https://www.youtube.com/watch?v=YRr_zcaxBaY&t=10s',
+        'https://www.investopedia.com/terms/d/dti.asp',
+        'https://www.studyassist.gov.au/financial-and-study-support/hecs-help',
+        'https://www.studyassist.gov.au/financial-and-study-support/commonwealth-supported-places-csps',
+        'https://www.studyassist.gov.au/managing-and-repaying-your-loan/loan-increases-and-indexation',
+        'https://www.realestate.com.au/advice/rental-bond-and-how-does-it-work/?utm_source=chatgpt.com',
+        'https://soho.com.au/articles/rent-guarantor?utm_source=chatgpt.com',
+        'https://www.accc.gov.au/consumers/problem-with-a-product-or-service-you-bought/repair-replace-refund-cancel',
+        'https://www.accc.gov.au/consumers/buying-products-and-services',
+        'https://www.scamwatch.gov.au/types-of-scams/phishing'
+      ],
       taxTerms: [
         {
           term: "Non-concessional contribution",
@@ -408,56 +437,41 @@ export default {
     }
   },
   methods: {
-    validateSalaryInput(event) {
-      const value = parseFloat(event.target.value)
-      if (value > 999999) {
-        alert('Maximum salary limit is $999,999. Please enter a lower amount.')
-        // Optionally reset to the limit
-        this.grossSalary = 999999
-      } else if (value < 0) {
-        alert('Salary cannot be negative. Please enter a positive amount.')
-        this.grossSalary = 0
-      }
-    },
     calculateTax() {
-      // Validate input
-      if (!this.grossSalary || this.grossSalary <= 0) {
-        alert('Please enter a valid salary amount')
-        return
-      }
+      const monthlySalary = parseFloat(this.grossSalary.replace(/,/g, '')) || 0
+      const annualSalary = monthlySalary * 12
       
-      const salary = parseFloat(this.grossSalary) || 0
-      
-      // Australian tax brackets for 2023-24
-      let incomeTax = 0
-      if (salary > 18200) {
-        if (salary <= 45000) {
-          incomeTax = (salary - 18200) * 0.19
-        } else if (salary <= 120000) {
-          incomeTax = 5092 + (salary - 45000) * 0.325
-        } else if (salary <= 180000) {
-          incomeTax = 29467 + (salary - 120000) * 0.37
+      // Australian tax brackets for 2023-24 (based on annual salary)
+      let annualIncomeTax = 0
+      if (annualSalary > 18200) {
+        if (annualSalary <= 45000) {
+          annualIncomeTax = (annualSalary - 18200) * 0.19
+        } else if (annualSalary <= 120000) {
+          annualIncomeTax = 5092 + (annualSalary - 45000) * 0.325
+        } else if (annualSalary <= 180000) {
+          annualIncomeTax = 29467 + (annualSalary - 120000) * 0.37
         } else {
-          incomeTax = 51667 + (salary - 180000) * 0.45
+          annualIncomeTax = 51667 + (annualSalary - 180000) * 0.45
         }
       }
       
-      // Medicare levy (2%)
-      const medicareLevy = salary * 0.02
-      
-      // Superannuation (11.5%)
-      const superannuation = salary * 0.115
-      
-      // Net pay
-      const netPay = salary - incomeTax - medicareLevy
+      // Convert to monthly amounts
+      const monthlyIncomeTax = annualIncomeTax / 12
+      const monthlyMedicareLevy = monthlySalary * 0.02
+      const monthlySuperannuation = monthlySalary * 0.115
+      const monthlyNetPay = monthlySalary - monthlyIncomeTax - monthlyMedicareLevy
       
       this.calculatedResults = {
-        grossSalary: Math.round(salary),
-        incomeTax: Math.round(incomeTax),
-        medicareLevy: Math.round(medicareLevy),
-        netPay: Math.round(netPay),
-        superannuation: Math.round(superannuation)
+        incomeTax: Math.round(monthlyIncomeTax),
+        medicareLevy: Math.round(monthlyMedicareLevy),
+        netPay: Math.round(monthlyNetPay),
+        superannuation: Math.round(monthlySuperannuation)
       }
+
+      // 同步税前月薪到Budget Planner
+      try {
+        localStorage.setItem('syncedMonthlySalary', Math.round(monthlySalary).toString())
+      } catch (e) {}
     },
     formatNumber(num) {
       return num.toLocaleString()
@@ -484,6 +498,65 @@ export default {
         'fees for late/missed payments': 'red'
       }
       return colors[category] || 'gray'
+    },
+    watchCurrentVideo() {
+      const link = this.currentVideoLink
+      if (!link) return
+      try { sessionStorage.setItem('pendingVideoLink', link) } catch (e) {}
+      window.location.hash = '#financial-literacy'
+    },
+    handleStorageChange(event) {
+      if (event.key === 'syncedMonthlySalary' && event.newValue) {
+        this.grossSalary = parseFloat(event.newValue).toLocaleString();
+      }
+    },
+    handleSalarySync(event) {
+      if (event.detail && event.detail.salary) {
+        this.grossSalary = parseFloat(event.detail.salary).toLocaleString();
+      }
+    }
+  },
+  computed: {
+    videoMap() {
+      const map = {}
+      const n = Math.min(this.videoTargetIndices.length, this.videoLinks.length)
+      for (let i = 0; i < n; i++) {
+        map[this.videoTargetIndices[i]] = this.videoLinks[i]
+      }
+      return map
+    },
+    currentVideoLink() {
+      const idx1 = this.currentCardIndex + 1
+      return this.videoMap[idx1] || null
+    },
+    atStart() { return this.currentCardIndex === 0 },
+    atEnd() { return this.currentCardIndex === this.taxTerms.length - 1 }
+  },
+  mounted() {
+    // 恢复保存的薪资数据
+    try {
+      const syncedSalary = localStorage.getItem('syncedMonthlySalary');
+      if (syncedSalary) {
+        this.grossSalary = parseFloat(syncedSalary).toLocaleString();
+      }
+    } catch (e) {}
+
+    // 监听来自其他页面的薪资变化
+    window.addEventListener('storage', this.handleStorageChange);
+    // 也监听同一窗口内的变化
+    window.addEventListener('salary-sync', this.handleSalarySync);
+  },
+  beforeUnmount() {
+    window.removeEventListener('storage', this.handleStorageChange);
+    window.removeEventListener('salary-sync', this.handleSalarySync);
+  },
+  watch: {
+    grossSalary(newValue) {
+      // 当 grossSalary 改变时，自动同步到 localStorage
+      const numericValue = parseFloat(newValue.replace(/,/g, '')) || 0;
+      try {
+        localStorage.setItem('syncedMonthlySalary', numericValue.toString());
+      } catch (e) {}
     }
   }
 }
@@ -492,7 +565,7 @@ export default {
 <style scoped>
 .tax-learn {
   min-height: 100vh;
-  background: transparent;  /* Let dark theme from HTML root show through */
+  background: #f8fafc;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
@@ -543,7 +616,7 @@ export default {
 /* Title Section */
 .title-section {
   text-align: center;
-  padding: 60px 24px 0px;
+  padding: 60px 24px 40px;
   background: white;
 }
 
@@ -565,7 +638,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 0px 24px;  /* removed bottom padding to eliminate gap with footer */
+  padding: 40px 24px;
   display: grid;
   grid-template-columns: 400px 1fr;
   gap: 40px;
@@ -688,21 +761,6 @@ export default {
   box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
 }
 
-.static-value {
-  width: 100%;
-  height: 44px;
-  padding: 0 12px;
-  border: 1px solid #d1d5db;
-  border-radius: 6px;
-  font-size: 16px;
-  background: #f9fafb;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  color: #374151;
-  font-weight: 500;
-}
-
 .calculate-btn {
   width: 100%;
   height: 48px;
@@ -779,12 +837,6 @@ export default {
   padding: 12px;
   border-radius: 8px;
   background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  transition: border-color 0.2s ease;
-}
-
-.tax-item:hover {
-  border-color: #d1d5db;
 }
 
 .tax-color {
@@ -795,10 +847,10 @@ export default {
   margin-top: 2px;
 }
 
-.tax-color.red { background: #ef4444 !important; }
-.tax-color.orange { background: #f97316 !important; }
-.tax-color.green { background: #10b981 !important; }
-.tax-color.blue { background: #3b82f6 !important; }
+.tax-color.red { background: #ef4444; }
+.tax-color.orange { background: #f97316; }
+.tax-color.green { background: #10b981; }
+.tax-color.blue { background: #3b82f6; }
 
 .tax-info {
   flex: 1;
@@ -871,55 +923,41 @@ export default {
   border-top: 1px solid var(--border-color, #e5e7eb);
 }
 
-/* Navigation buttons using calculate-btn class */
-.navigation-hints .calculate-btn {
-  width: auto !important;
-  height: auto !important;
-  padding: 8px 12px !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  gap: 6px !important;
-  font-size: 14px !important;
-  color: white !important;
+.hint-link {
+  background: transparent;
+  border: 0;
+  padding: 6px 0;
+  color: #6B7280;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
 }
 
-/* Ensure all text inside navigation buttons is white */
-.navigation-hints .calculate-btn .hint-text,
-.navigation-hints .calculate-btn .hint-icon,
-.navigation-hints .calculate-btn span {
-  color: white !important;
-}
-
-.navigation-hints .calculate-btn:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-  background: #6B7280 !important;
-}
+.hint-link:hover:not(:disabled) { color: var(--primary-color, #4F46E5); }
+.hint-link:disabled { opacity: .45; cursor: not-allowed; }
 
 .arrow-btn:disabled { opacity: .45; cursor: not-allowed; }
 
 
-.nav-arrows .arrow-btn,
 .arrow-btn {
-  background: #4f46e5 !important;
-  border: none !important;
-  border-radius: 4px !important;
-  width: 32px !important;
-  height: 32px !important;
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  cursor: pointer !important;
-  color: white !important;
-  font-size: 14px !important;
-  transition: background-color 0.2s !important;
-  padding: 0 !important;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 14px;
 }
 
-.nav-arrows .arrow-btn:hover,
 .arrow-btn:hover {
-  background: #4338CA !important;
-  color: white !important;
+  background: #e5e7eb;
+  color: #374151;
 }
 
 .section-subtitle {
@@ -963,6 +1001,26 @@ export default {
   margin-bottom: 16px;
 }
 
+.badge-and-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.watch-btn {
+  background: #4f46e5;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  height: fit-content;
+}
+.watch-btn:hover { background: #4338ca; }
+
 .concept-text {
   color: #374151;
   font-size: 14px;
@@ -991,33 +1049,33 @@ export default {
 }
 
 .category-badge.blue {
-  background: #2563eb !important;
-  color: white !important;
+  background: #eff6ff;
+  color: #2563eb;
 }
 
 .category-badge.green {
-  background: #16a34a !important;
-  color: white !important;
+  background: #f0fdf4;
+  color: #16a34a;
 }
 
 .category-badge.purple {
-  background: #a855f7 !important;
-  color: white !important;
+  background: #faf5ff;
+  color: #a855f7;
 }
 
 .category-badge.orange {
-  background: #ea580c !important;
-  color: white !important;
+  background: #fff7ed;
+  color: #ea580c;
 }
 
 .category-badge.red {
-  background: #dc2626 !important;
-  color: white !important;
+  background: #fef2f2;
+  color: #dc2626;
 }
 
 .category-badge.gray {
-  background: #6b7280 !important;
-  color: white !important;
+  background: #f9fafb;
+  color: #6b7280;
 }
 
 .navigation-hints {
@@ -1253,7 +1311,7 @@ export default {
 .resources-section {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 60px 24px 0px;
+  padding: 60px 24px 40px;
 }
 
 .resources-title {

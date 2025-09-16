@@ -23,26 +23,21 @@ const classes = computed(() => (props.variant === 'main' ? 'main-title' : 'subti
 
 <style scoped>
 .main-title {
-  font-size: 1.5rem;      /* ~24px - increased for better visibility */
+  font-size: 1.1rem;      /* ~18px - further reduced from 20px */
   font-weight: 700;
   color: var(--text-primary);      /* THEME TOKEN */
-  line-height: 1.2;      /* tighter line height */
-  margin-bottom: 0.1rem;  /* very minimal margin */
+  line-height: 1.3;
+  margin-bottom: 0.5rem;  /* reduced margin */
   text-align: inherit;             /* inherit alignment from parent (center/left) */
 }
 
 .subtitle {
-  font-size: 1.1rem;      /* ~18px - increased for better visibility */
-  color: #333333;         /* Dark gray for better readability in light mode */
-  line-height: 1.4;      /* tighter line height */
+  font-size: 0.9rem;      /* ~14px - further reduced from 16px */
+  color: var(--text-secondary);    /* THEME TOKEN */
+  line-height: 1.5;
   font-weight: 400;
-  margin-top: 0.05rem;    /* ultra minimal margin */
-  margin-bottom: 0.1rem;  /* ultra minimal margin */
+  margin-top: 0.3rem;     /* reduced margin */
+  margin-bottom: 1rem;    /* reduced margin */
   text-align: inherit;             /* inherit alignment from parent */
-}
-
-/* Dark mode override */
-:global(.non-home-dark) .subtitle {
-  color: var(--text-secondary);    /* Use theme token in dark mode */
 }
 </style>

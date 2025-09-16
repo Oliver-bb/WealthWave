@@ -10,7 +10,6 @@ frontend:
     build:
       commands:
         - npm run build
-        - npx vite build --base=/iteration2/ --outDir dist/iteration2
   artifacts:
     baseDirectory: dist
     files:

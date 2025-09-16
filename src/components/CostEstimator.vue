@@ -52,7 +52,7 @@
               <input 
                 type="text" 
                 v-model="location" 
-                placeholder="e.g., Melbourne, Australia" 
+                placeholder="Enter country or city" 
                 class="form-input"
               />
             </div>
@@ -272,7 +272,7 @@ export default {
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px 0px 24px;  /* removed bottom padding to eliminate gap with footer */
+  padding: 40px 24px;
 }
 
 .estimator-container {

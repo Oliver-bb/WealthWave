@@ -14,15 +14,15 @@
               </div>
               <div class="form-group">
                 <label>Salary</label>
-                <input type="number" v-model="income.salary" placeholder="e.g., 5000 (monthly salary)" min="0" max="999999" />
+                <input type="text" v-model="income.salary" placeholder="Enter your monthly salary" />
               </div>
               <div class="form-group">
                 <label>Investments</label>
-                <input type="number" v-model="income.investments" placeholder="e.g., 200 (monthly investment returns)" min="0" max="99999" />
+                <input type="text" v-model="income.investments" placeholder="Investment returns" />
               </div>
               <div class="form-group">
                 <label>Other Income</label>
-                <input type="number" v-model="income.other" placeholder="e.g., 500 (freelance, side jobs)" min="0" max="99999" />
+                <input type="text" v-model="income.other" placeholder="Freelance, side jobs, etc." />
               </div>
             </div>
 
@@ -34,27 +34,47 @@
               </div>
               <div class="form-group">
                 <label>Housing</label>
-                <input type="number" v-model="expenses.housing" placeholder="e.g., 1500 (rent, utilities)" min="0" max="99999" />
+                <input type="text" v-model="expenses.housing" placeholder="Rent, mortgage, utilities" />
               </div>
               <div class="form-group">
                 <label>Transportation</label>
-                <input type="number" v-model="expenses.transportation" placeholder="e.g., 400 (car, transport)" min="0" max="99999" />
+                <input type="text" v-model="expenses.transportation" placeholder="Car payments, gas, public transport" />
               </div>
               <div class="form-group">
                 <label>Food & Dining</label>
-                <input type="number" v-model="expenses.food" placeholder="e.g., 600 (groceries, dining)" min="0" max="99999" />
+                <input type="text" v-model="expenses.food" placeholder="Groceries, restaurants" />
               </div>
               <div class="form-group">
                 <label>Entertainment</label>
-                <input type="number" v-model="expenses.entertainment" placeholder="e.g., 300 (subscriptions, hobbies)" min="0" max="99999" />
+                <input type="text" v-model="expenses.entertainment" placeholder="Movies, subscriptions, hobbies" />
               </div>
               <div class="form-group">
                 <label>Healthcare</label>
-                <input type="number" v-model="expenses.healthcare" placeholder="e.g., 150 (insurance, medical)" min="0" max="99999" />
+                <input type="text" v-model="expenses.healthcare" placeholder="Insurance, medical expenses" />
               </div>
             </div>
 
             <button class="calculate-btn" @click="calculateBudget">Calculate Budget</button>
+            
+            <!-- Budget Summary -->
+            <div v-if="shouldUpdate" class="budget-summary">
+              <div class="summary-item">
+                <span class="label">Total Income:</span>
+                <span class="value income">{{ formatCurrency(totalIncome) }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Total Expenses:</span>
+                <span class="value expense">{{ formatCurrency(totalExpenses) }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Balance:</span>
+                <span class="value" :class="balanceClass">{{ formatCurrency(balance) }}</span>
+              </div>
+              <div class="summary-item">
+                <span class="label">Savings Rate:</span>
+                <span class="value" :class="savingsRateClass">{{ savingsRate }}%</span>
+              </div>
+            </div>
           </div>
 
           <!-- Right: Pie Chart and Alerts -->
@@ -134,13 +154,13 @@ export default {
   name: "BudgetPlanner",
   setup() {
     // ===== Left form =====
-    const income = ref({ salary: "", investments: "", other: "" });
+    const income = ref({ salary: "5800", investments: "0", other: "0" });
     const expenses = ref({
-      housing: "",
-      transportation: "",
-      food: "",
-      entertainment: "",
-      healthcare: "",
+      housing: "1800",
+      transportation: "650",
+      food: "400",
+      entertainment: "200",
+      healthcare: "150",
     });
 
     // 用于“已计算”的快照：仅点击按钮后更新
@@ -171,31 +191,16 @@ export default {
         { value: parseFloat(displayedExpenses.value.entertainment) || 0,  name: "Entertainment" },
         { value: parseFloat(displayedExpenses.value.healthcare) || 0,     name: "Healthcare" },
       ];
-      
-      // Detect dark mode
-      const isDarkMode = document.documentElement.classList.contains('non-home-dark');
-      const textColor = isDarkMode ? '#e6eaf2' : '#374151';
-      
       chart.setOption({
-        tooltip: { 
-          trigger: "item", 
-          formatter: "{b}<br/>${c} ({d}%)",
-          textStyle: { color: textColor }
-        },
-        legend: { 
-          bottom: 8,
-          textStyle: { color: textColor }
-        },
+        tooltip: { trigger: "item", formatter: "{b}<br/>${c} ({d}%)" },
+        legend: { bottom: 8 },
         series: [{
           name: "Expenses",
           type: "pie",
           radius: ["40%", "70%"],
           center: ["50%", "50%"],
           itemStyle: { borderRadius: 8, borderColor: "#fff", borderWidth: 2 },
-          label: { 
-            formatter: "{b}\n${c}",
-            color: textColor
-          },
+          label: { formatter: "{b}\n${c}" },
           data: data.length ? data : [{ value: 1, name: "No Data" }],
         }],
       });
@@ -219,11 +224,11 @@ export default {
     ];
 
     const budgets = ref({
-      housing: "",
-      transportation: "",
-      food: "",
-      entertainment: "",
-      healthcare: "",
+      housing: 2000,
+      transportation: 500,
+      food: 600,
+      entertainment: 300,
+      healthcare: 200,
     });
 
     const displayedBudgets = ref({ ...budgets.value });
@@ -248,20 +253,82 @@ export default {
     const statusText    = (item) => percentUsed(item) > 100 ? "Exceeded" : (percentUsed(item) >= 90 ? "Warning" : "Good");
     const statusIcon    = (item) => percentUsed(item) > 100 ? "🚫" : (percentUsed(item) >= 90 ? "⚠️" : "✅");
     const formatNumber  = (v) => (parseFloat(v) || 0).toLocaleString();
+    const formatCurrency = (v) => '$' + (parseFloat(v) || 0).toLocaleString();
+
+    // ===== Budget calculations =====
+    const totalIncome = computed(() => {
+      if (!shouldUpdate.value) return 0; // Only calculate after clicking Calculate Budget
+      const salary = parseFloat(income.value.salary.replace(/,/g, '')) || 0;
+      const investments = parseFloat(income.value.investments.replace(/,/g, '')) || 0;
+      const other = parseFloat(income.value.other.replace(/,/g, '')) || 0;
+      return salary + investments + other;
+    });
+
+    const totalExpenses = computed(() => {
+      if (!shouldUpdate.value) return 0; // Only calculate after clicking Calculate Budget
+      const housing = parseFloat(displayedExpenses.value.housing.replace(/,/g, '')) || 0;
+      const transportation = parseFloat(displayedExpenses.value.transportation.replace(/,/g, '')) || 0;
+      const food = parseFloat(displayedExpenses.value.food.replace(/,/g, '')) || 0;
+      const entertainment = parseFloat(displayedExpenses.value.entertainment.replace(/,/g, '')) || 0;
+      const healthcare = parseFloat(displayedExpenses.value.healthcare.replace(/,/g, '')) || 0;
+      return housing + transportation + food + entertainment + healthcare;
+    });
+
+    const balance = computed(() => totalIncome.value - totalExpenses.value);
+    
+    const savingsRate = computed(() => {
+      if (totalIncome.value === 0) return 0;
+      return Math.round((balance.value / totalIncome.value) * 100);
+    });
+
+    const balanceClass = computed(() => {
+      if (balance.value > 0) return 'positive';
+      if (balance.value < 0) return 'negative';
+      return 'neutral';
+    });
+
+    const savingsRateClass = computed(() => {
+      if (savingsRate.value >= 20) return 'excellent';
+      if (savingsRate.value >= 10) return 'good';
+      if (savingsRate.value >= 0) return 'fair';
+      return 'poor';
+    });
 
     // ===== Mount & watchers =====
     onMounted(() => {
       initChart();
+      // 检查是否有从TaxLearn同步的薪资数据
+      try {
+        const syncedSalary = localStorage.getItem('syncedMonthlySalary');
+        if (syncedSalary) {
+          income.value.salary = parseFloat(syncedSalary).toLocaleString();
+        }
+      } catch (e) {}
       calculateBudget();
     });
 
     // Only update when Calculate Budget is clicked
     // Remove automatic updates on input change
 
+    // 监听 salary 变化并同步到 Tax Learn
+    watch(() => income.value.salary, (newValue) => {
+      if (newValue) {
+        const numericValue = parseFloat(newValue.replace(/,/g, '')) || 0;
+        try {
+          localStorage.setItem('syncedMonthlySalary', numericValue.toString());
+          // 触发自定义事件通知其他组件
+          window.dispatchEvent(new CustomEvent('salary-sync', { 
+            detail: { salary: numericValue.toString() } 
+          }));
+        } catch (e) {}
+      }
+    });
+
     return {
       income, expenses, calculateBudget,
       chartRef, shouldUpdate,
       budgets, alertCards, percentUsed, statusClass, barClass, progressWidth, statusText, statusIcon, formatNumber,
+      totalIncome, totalExpenses, balance, savingsRate, balanceClass, savingsRateClass, formatCurrency,
     };
   },
 };
@@ -269,7 +336,7 @@ export default {
 
 <style scoped>
 .budget-planner { min-height: 100vh; background: #f8fafc; }
-.main-content { padding: 40px 0 0 0; }
+.main-content { padding: 3rem 0; }
 .container { max-width: 1400px; margin: 0 auto; padding: 0 2rem; }
 
 /* top layout: left form + right flashcards */
@@ -301,6 +368,47 @@ export default {
 
 .calculate-btn { width: 100%; background: #4F46E5; color: #fff; border: 0; padding: .9rem; border-radius: 10px; font-weight: 700; cursor: pointer; }
 .calculate-btn:hover { background: #4338CA; }
+
+/* Budget Summary */
+.budget-summary {
+  margin-top: 20px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.summary-item:last-child {
+  margin-bottom: 0;
+}
+
+.summary-item .label {
+  font-weight: 500;
+  color: #374151;
+  font-size: 14px;
+}
+
+.summary-item .value {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.summary-item .value.income { color: #059669; }
+.summary-item .value.expense { color: #dc2626; }
+.summary-item .value.positive { color: #059669; }
+.summary-item .value.negative { color: #dc2626; }
+.summary-item .value.neutral { color: #6b7280; }
+.summary-item .value.excellent { color: #059669; }
+.summary-item .value.good { color: #16a34a; }
+.summary-item .value.fair { color: #ca8a04; }
+.summary-item .value.poor { color: #dc2626; }
 
 /* right chart section */
 .summary-section { display: flex; flex-direction: column; }
@@ -348,13 +456,13 @@ export default {
   box-shadow: 0 1px 2px rgba(0,0,0,.04);
   font-size: 0.92rem;
 }
-.alert-card.warning  { border-left-color: #F59E0B !important; }
-.alert-card.exceeded { border-left-color: #EF4444 !important; }
-.alert-card.good     { border-left-color: #10B981 !important; }
+.alert-card.warning  { border-left-color: #F59E0B; }
+.alert-card.exceeded { border-left-color: #EF4444; }
+.alert-card.good     { border-left-color: #10B981; }
 
-.alert-card-inline.warning  { border-left-color: #F59E0B !important; }
-.alert-card-inline.exceeded { border-left-color: #EF4444 !important; }
-.alert-card-inline.good     { border-left-color: #10B981 !important; }
+.alert-card-inline.warning  { border-left-color: #F59E0B; }
+.alert-card-inline.exceeded { border-left-color: #EF4444; }
+.alert-card-inline.good     { border-left-color: #10B981; }
 
 .alert-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
 .alert-header h4 { font-size: 0.95rem; font-weight: 700; color: #111827; margin: 0; }
@@ -363,84 +471,25 @@ export default {
 
 .progress-bar { width: 100%; height: 8px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
 .progress-fill { height: 100%; border-radius: 4px; }
-.progress-fill.warning  { background: #F59E0B !important; }
-.progress-fill.exceeded { background: #EF4444 !important; }
-.progress-fill.good     { background: #10B981 !important; }
+.progress-fill.warning  { background: #F59E0B; }
+.progress-fill.exceeded { background: #EF4444; }
+.progress-fill.good     { background: #10B981; }
 
 .alert-status { font-size: .9rem; font-weight: 700; }
-.alert-card.warning  .alert-status { color: #B45309 !important; }     
-.alert-card.exceeded .alert-status { color: #B91C1C !important; }     
-.alert-card.good     .alert-status { color: #065F46 !important; }     
+.alert-card.warning  .alert-status { color: #B45309; }     
+.alert-card.exceeded .alert-status { color: #B91C1C; }     
+.alert-card.good     .alert-status { color: #065F46; }     
 
 /* 强化 inline 版本的状态色 */
-.alert-card-inline.warning  .alert-status { color: #B45309 !important; }
-.alert-card-inline.exceeded .alert-status { color: #B91C1C !important; }
-.alert-card-inline.good     .alert-status { color: #065F46 !important; }
+.alert-card-inline.warning  .alert-status { color: #B45309; }
+.alert-card-inline.exceeded .alert-status { color: #B91C1C; }
+.alert-card-inline.good     .alert-status { color: #065F46; }
 
 .alert-row.editable { align-items: center; }
 .budget-edit { display: inline-flex; align-items: center; gap: 6px; }
 .budget-edit .currency { color: #6b7280; font-size: 0.9rem; }
 .budget-input { width: 110px; padding: 6px 10px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; background: #fff; }
 .budget-input:focus { outline: none; border-color: #4F46E5; box-shadow: 0 0 0 3px rgba(79,70,229,.12); }
-
-/* Dark mode styles */
-@media (prefers-color-scheme: dark) {
-  .budget-planner { background: transparent; }
-  
-  .form-section {
-    background: #1f2937 !important;
-    color: #e5e7eb;
-  }
-  
-  .chart-card {
-    background: #1f2937 !important;
-    color: #e5e7eb;
-  }
-  
-  .section-header h3 {
-    color: #e5e7eb !important;
-  }
-  
-  .form-group label {
-    color: #d1d5db !important;
-  }
-  
-  .form-group input {
-    background: #374151 !important;
-    border: 1px solid #4b5563 !important;
-    color: #e5e7eb !important;
-  }
-  
-  .chart-header h3 {
-    color: #e5e7eb !important;
-  }
-  
-  .alerts-header-inline h3 {
-    color: #e5e7eb !important;
-  }
-  
-  .alert-card-inline {
-    background: #374151 !important;
-  }
-  
-  .alert-header h4 {
-    color: #e5e7eb !important;
-  }
-  
-  .budget-input {
-    background: #4b5563 !important;
-    border: 1px solid #6b7280 !important;
-    color: #e5e7eb !important;
-  }
-  
-  /* Ensure colored circles remain visible in dark mode */
-  .section-icon.green { 
-    background: #10B981 !important; 
-  }
-  .section-icon.red { 
-    background: #EF4444 !important; 
-  }
-}
 
 /* responsive */
 @media (max-width: 1200px) {
